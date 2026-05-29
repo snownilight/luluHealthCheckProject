@@ -32,13 +32,13 @@ This document lists all development tasks organized by Phase, mapping directly t
 
 ## 📋 Phase 2: Backend Core (Event Stream & Cache)
 
-### ⬜ `PET-004`: Configure Kafka Producer & Care Event API endpoints
+### 🟢 `PET-004`: Configure Kafka Producer & Care Event API endpoints
 *   **Description**: Implement the REST API endpoint `POST /api/v1/care-logs` that takes feeding, drinking, weight, activity, and grooming logs, validates them, and produces them into the Kafka `pet-events` topic.
 *   **Checklist**:
-    - [ ] Configure `KafkaTemplate<String, Object>` in Spring Boot
-    - [ ] Create `CareLogRequest` DTO and API controller
-    - [ ] Implement event validation (prevent negative/excessive inputs)
-    - [ ] Write integration test verifying REST controller publishes to Kafka
+    - [x] Configure `KafkaTemplate<String, Object>` in Spring Boot
+    - [x] Create `CareLogRequest` DTO and API controller
+    - [x] Implement event validation (prevent negative/excessive inputs)
+    - [x] Write integration test verifying REST controller publishes to Kafka
 
 ### ⬜ `PET-005`: Configure Redis Connection & Current State Machine Hash
 *   **Description**: Configure Redis connection pool in Spring Boot and define repository/helper classes to read/write the pet's current state (`pet:status:current`).

@@ -1,13 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-004` (Configure Kafka Producer & Care Event API endpoints)
-* **Status**: Implementing code
+* **Current Active Task**: `PET-005` (Configure Redis Connection & Current State Machine Hash)
+* **Status**: Planning
 * **Plan**:
-  - [ ] Fix Kafka serializer class paths in `application-dev.properties`
-  - [ ] Create DTO `CareLogRequest` and validate input constraints
-  - [ ] Create `KafkaProducerConfig` (topic creation) and `CareLogProducer` service
-  - [ ] Create `CareLogController` for `POST /api/v1/care-logs`
-  - [ ] Write integration test `CareLogControllerTest` to verify validation & Kafka message publishing
+  - [ ] Define Redis connection properties & configs in `application-dev.properties`
+  - [ ] Implement `RedisStateService` (or helper components) to read/write state hashes
+  - [ ] Ensure serialization handles DTO/POJO models cleanly
 
 ---
 
@@ -15,6 +13,7 @@
 * `PET-001` (Done): Environment/Architecture docs setup.
 * `PET-002` (Done): Database Schema & MyBatis Mapper Mapping (Refactored from JPA to MyBatis; table structures auto-initialized via `schema.sql`).
 * `PET-003` (Done): Docker Compose setup (MariaDB, Redis with Ex notify, Kafka KRaft).
+* `PET-004` (Done): Configure Kafka Producer & Care Event API endpoints (validated DTO, serialization paths corrected, REST API publishes events, integration test passed).
 
 ---
 

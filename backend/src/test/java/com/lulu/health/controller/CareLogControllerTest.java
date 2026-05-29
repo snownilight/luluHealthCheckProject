@@ -1,0 +1,118 @@
+package com.lulu.health.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lulu.health.config.KafkaProducerConfig;
+import com.lulu.health.dto.CareLogRequest;
+import com.lulu.health.model.EventType;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest(properties = {
+    "spring.autoconfigure.exclude=" +
+        "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration," +
+        "org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration," +
+        "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration," +
+        "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration",
+    "spring.cache.type=none" // disable Caffeine cache in tests to avoid dependency issues
+})
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@EmbeddedKafka(partitions = 1, topics = {KafkaProducerConfig.PET_EVENTS_TOPIC})
+public class CareLogControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private EmbeddedKafkaBroker embeddedKafkaBroker;
+
+    private Consumer<String, String> consumer;
+
+    @BeforeEach
+    public void setUp() {
+        Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("testGroup", "true", embeddedKafkaBroker);
+        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        
+        DefaultKafkaConsumerFactory<String, String> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerProps);
+        consumer = consumerFactory.createConsumer();
+        embeddedKafkaBroker.consumeFromAnEmbeddedTopic(consumer, KafkaProducerConfig.PET_EVENTS_TOPIC);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (consumer != null) {
+            consumer.close();
+        }
+    }
+
+    @Test
+    public void testCreateCareLog_Success() throws Exception {
+        CareLogRequest request = CareLogRequest.builder()
+                .eventType(EventType.FEEDING)
+                .operator("二姐")
+                .value(50.0)
+                .unit("g")
+                .note("早餐")
+                .build();
+
+        mockMvc.perform(post("/api/v1/care-logs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.message").value("Care log accepted and queued for processing"))
+                .andExpect(jsonPath("$.data.eventId").exists())
+                .andExpect(jsonPath("$.data.operator").value("二姐"))
+                .andExpect(jsonPath("$.data.value").value(50.0));
+
+        // Verify Kafka message was sent
+        ConsumerRecord<String, String> record = KafkaTestUtils.getSingleRecord(consumer, KafkaProducerConfig.PET_EVENTS_TOPIC, java.time.Duration.ofSeconds(5));
+        assertThat(record).isNotNull();
+        assertThat(record.value()).contains("FEEDING");
+        assertThat(record.value()).contains("二姐");
+    }
+
+    @Test
+    public void testCreateCareLog_ValidationError() throws Exception {
+        CareLogRequest request = CareLogRequest.builder()
+                .eventType(null) // invalid
+                .operator("") // invalid
+                .value(-10.0) // invalid
+                .build();
+
+        mockMvc.perform(post("/api/v1/care-logs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("Validation error")));
+    }
+}

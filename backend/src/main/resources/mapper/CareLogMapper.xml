@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lulu.health.mapper.CareLogMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO care_logs(event_id, event_type, operator, value, unit, note, event_timestamp)
+        VALUES(#{eventId}, #{eventType}, #{operator}, #{value}, #{unit}, #{note}, #{eventTimestamp})
+    </insert>
+
+    <select id="findById" resultType="com.lulu.health.model.CareLog">
+        SELECT * FROM care_logs WHERE id = #{id}
+    </select>
+
+    <select id="findAll" resultType="com.lulu.health.model.CareLog">
+        SELECT * FROM care_logs ORDER BY event_timestamp DESC
+    </select>
+
+</mapper>

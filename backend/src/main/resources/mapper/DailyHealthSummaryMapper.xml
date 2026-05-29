@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lulu.health.mapper.DailyHealthSummaryMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO daily_health_summaries(date, total_water_intake_ml, total_food_intake_g, average_weight_kg)
+        VALUES(#{date}, #{totalWaterIntakeMl}, #{totalFoodIntakeG}, #{averageWeightKg})
+    </insert>
+
+    <update id="update">
+        UPDATE daily_health_summaries SET
+            total_water_intake_ml = #{totalWaterIntakeMl},
+            total_food_intake_g = #{totalFoodIntakeG},
+            average_weight_kg = #{averageWeightKg}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findByDate" resultType="com.lulu.health.model.DailyHealthSummary">
+        SELECT * FROM daily_health_summaries WHERE date = #{date}
+    </select>
+
+</mapper>

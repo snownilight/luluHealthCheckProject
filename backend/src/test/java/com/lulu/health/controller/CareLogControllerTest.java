@@ -87,7 +87,7 @@ public class CareLogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.message").value("Care log accepted and queued for processing"))
                 .andExpect(jsonPath("$.data.eventId").exists())
                 .andExpect(jsonPath("$.data.operator").value("二姐"))
@@ -112,7 +112,11 @@ public class CareLogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("Validation error")));
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.anyOf(
+                        org.hamcrest.Matchers.containsString("eventType"),
+                        org.hamcrest.Matchers.containsString("operator"),
+                        org.hamcrest.Matchers.containsString("value")
+                )));
     }
 }

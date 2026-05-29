@@ -1,40 +1,30 @@
 package com.lulu.health.dto;
-
+ 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 統一的 API 回傳格式
+ * 使用 Lombok @Data 自動產生 Getter/Setter, @NoArgsConstructor, @AllArgsConstructor 省去樣板程式碼
+ */
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
-    private boolean success;
+    private int code;
     private String message;
     private T data;
 
-    public static <T> ApiResponse<T> success(T data) {
-        return ApiResponse.<T>builder()
-                .success(true)
-                .message("Success")
-                .data(data)
-                .build();
-    }
-
     public static <T> ApiResponse<T> success(String message, T data) {
-        return ApiResponse.<T>builder()
-                .success(true)
-                .message(message)
-                .data(data)
-                .build();
+        return new ApiResponse<>(200, message, data);
     }
 
-    public static <T> ApiResponse<T> error(String message) {
-        return ApiResponse.<T>builder()
-                .success(false)
-                .message(message)
-                .data(null)
-                .build();
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(200, "Success", data);
+    }
+
+    public static <T> ApiResponse<T> error(int code, String message) {
+        return new ApiResponse<>(code, message, null);
     }
 }

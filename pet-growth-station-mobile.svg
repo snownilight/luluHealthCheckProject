@@ -1,0 +1,80 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="390" height="844" rx="42" fill="#141210"/>
+  <rect x="8" y="8" width="374" height="828" rx="36" fill="#FFF8F0"/>
+  <circle cx="318" cy="56" r="110" fill="#FFD9A7" opacity=".56"/>
+  <circle cx="44" cy="190" r="75" fill="#C8EEDC" opacity=".44"/>
+  <circle cx="342" cy="470" r="48" fill="#FFD2C3" opacity=".38"/>
+  <text x="24" y="40" font-family="Noto Sans TC, Arial" font-size="13" font-weight="500" fill="#8B5E3C">早安，Luna 的家人</text>
+  <text x="24" y="68" font-family="Noto Sans TC, Arial" font-size="22" font-weight="700" fill="#39291F">智慧成長觀測站</text>
+  <rect x="286" y="26" width="42" height="42" rx="21" fill="white" opacity=".94"/>
+  <rect x="301" y="38" width="12" height="15" rx="6" fill="#E9865B"/>
+  <circle cx="317" cy="36" r="4.5" fill="#F45C50"/>
+  <rect x="334" y="26" width="42" height="42" rx="21" fill="#BFEAD8"/>
+  <circle cx="355" cy="44" r="9" fill="#FFE0C2"/>
+  <rect x="346" y="57" width="24" height="12" rx="9" fill="#6DAA91"/>
+  <rect x="24" y="84" width="342" height="158" rx="28" fill="#FFF0DC"/>
+  <circle cx="274" cy="96" r="56" fill="#FFE1A8" opacity=".8"/>
+  <ellipse cx="258" cy="175" rx="34" ry="31" fill="#F2B879"/>
+  <ellipse cx="248" cy="112" rx="43" ry="37" fill="#FFD29D"/>
+  <ellipse cx="218" cy="91" rx="14" ry="19" fill="#D98757"/>
+  <ellipse cx="282" cy="91" rx="14" ry="19" fill="#D98757"/>
+  <ellipse cx="247" cy="147" rx="18" ry="12" fill="#FFF5E8"/>
+  <circle cx="231" cy="134" r="3" fill="#443226"/>
+  <circle cx="261" cy="134" r="3" fill="#443226"/>
+  <ellipse cx="247" cy="149" rx="5" ry="4" fill="#443226"/>
+  <rect x="312" y="178" width="28" height="11" rx="6" fill="#F2B879"/>
+  <text x="42" y="116" font-family="Noto Sans TC, Arial" font-size="12" font-weight="500" fill="#D56C44">即時狀態</text>
+  <text x="42" y="150" font-family="Noto Sans TC, Arial" font-size="24" font-weight="700" fill="#35261D">Luna 今天很</text>
+  <text x="42" y="182" font-family="Noto Sans TC, Arial" font-size="24" font-weight="700" fill="#35261D">穩定</text>
+  <text x="42" y="208" font-family="Noto Sans TC, Arial" font-size="12" fill="#7B6759">飲水、進食與活動量都在安全區間。</text>
+  <rect x="42" y="210" width="116" height="30" rx="15" fill="#E7F7EE"/>
+  <circle cx="60" cy="225" r="4" fill="#35B77D"/>
+  <text x="70" y="230" font-family="Noto Sans TC, Arial" font-size="12" font-weight="500" fill="#2E7D5A">剛剛同步</text>
+  <g font-family="Noto Sans TC, Arial">
+    <rect x="24" y="254" width="108" height="78" rx="20" fill="#DDF4FF"/>
+    <text x="34" y="278" font-size="12" font-weight="500" fill="#3E91B8">飲水</text>
+    <text x="34" y="305" font-size="20" font-weight="700" fill="#33261D">420ml</text>
+    <text x="34" y="324" font-size="11" font-weight="500" fill="#7B6759">安全</text>
+    <rect x="141" y="254" width="108" height="78" rx="20" fill="#FFF0D7"/>
+    <text x="151" y="278" font-size="12" font-weight="500" fill="#C97922">進食</text>
+    <text x="151" y="305" font-size="20" font-weight="700" fill="#33261D">72%</text>
+    <text x="151" y="324" font-size="11" font-weight="500" fill="#7B6759">正常</text>
+    <rect x="258" y="254" width="108" height="78" rx="20" fill="#E6F7EA"/>
+    <text x="268" y="278" font-size="12" font-weight="500" fill="#39845C">活動</text>
+    <text x="268" y="305" font-size="20" font-weight="700" fill="#33261D">38分</text>
+    <text x="268" y="324" font-size="11" font-weight="500" fill="#7B6759">活躍</text>
+  </g>
+  <rect x="24" y="344" width="342" height="102" rx="24" fill="white" opacity=".96"/>
+  <rect x="24" y="344" width="8" height="102" rx="4" fill="#FF8C62"/>
+  <circle cx="66" cy="386" r="22" fill="#FFE9DE"/>
+  <rect x="59" y="377" width="16" height="20" rx="6" fill="#FF8C62"/>
+  <text x="102" y="374" font-family="Noto Sans TC, Arial" font-size="16" font-weight="700" fill="#35261D">防禦性照顧提醒</text>
+  <text x="102" y="401" font-family="Noto Sans TC, Arial" font-size="12" fill="#766254">飲水量比平日低 12%，若未回升</text>
+  <text x="102" y="419" font-family="Noto Sans TC, Arial" font-size="12" fill="#766254">會主動提醒全家。</text>
+  <rect x="102" y="416" width="92" height="24" rx="12" fill="#FFF3E8"/>
+  <text x="112" y="432" font-family="Noto Sans TC, Arial" font-size="11" font-weight="500" fill="#C96E3B">溫和觀察</text>
+  <rect x="24" y="458" width="342" height="150" rx="24" fill="white" opacity=".96"/>
+  <text x="38" y="487" font-family="Noto Sans TC, Arial" font-size="17" font-weight="700" fill="#35261D">家庭照護聯絡簿</text>
+  <text x="278" y="486" font-family="Noto Sans TC, Arial" font-size="12" font-weight="500" fill="#3C8B64">依序同步</text>
+  <g font-family="Noto Sans TC, Arial">
+    <circle cx="53" cy="521" r="15" fill="#FFE1C9"/><text x="47" y="526" font-size="13" font-weight="700" fill="#5F4636">媽</text>
+    <text x="77" y="518" font-size="13" font-weight="500" fill="#3A2A20">08:20 補水 120ml</text><text x="77" y="534" font-size="11" fill="#8A7566">已同步給爸爸</text>
+    <circle cx="53" cy="556" r="15" fill="#D9F3E5"/><text x="47" y="561" font-size="13" font-weight="700" fill="#5F4636">爸</text>
+    <text x="77" y="553" font-size="13" font-weight="500" fill="#3A2A20">07:45 晨間散步</text><text x="77" y="569" font-size="11" fill="#8A7566">38 分鐘，精神很好</text>
+    <circle cx="53" cy="591" r="15" fill="#E8E0FF"/><text x="47" y="596" font-size="13" font-weight="700" fill="#5F4636">姐</text>
+    <text x="77" y="588" font-size="13" font-weight="500" fill="#3A2A20">昨晚 梳毛</text><text x="77" y="604" font-size="11" fill="#8A7566">皮膚無紅點</text>
+  </g>
+  <rect x="24" y="620" width="342" height="70" rx="22" fill="#F2FAF5" stroke="#D9EFE1"/>
+  <text x="40" y="650" font-family="Noto Sans TC, Arial" font-size="14" font-weight="700" fill="#345642">成長觀測</text>
+  <text x="40" y="670" font-family="Noto Sans TC, Arial" font-size="11" fill="#6B806F">體重與食慾穩定上升</text>
+  <path d="M212 670 L246 659 L280 663 L314 648 L344 642" stroke="#55A879" stroke-width="3" stroke-linecap="round"/>
+  <g fill="#55A879"><circle cx="212" cy="670" r="4"/><circle cx="246" cy="659" r="4"/><circle cx="280" cy="663" r="4"/><circle cx="314" cy="648" r="4"/><circle cx="344" cy="642" r="4"/></g>
+  <rect x="24" y="702" width="342" height="56" rx="22" fill="white" opacity=".98"/>
+  <rect x="39" y="709" width="70" height="42" rx="16" fill="#FFE8D9"/>
+  <g font-family="Noto Sans TC, Arial" font-size="10" font-weight="500" text-anchor="middle">
+    <rect x="65" y="715" width="18" height="18" rx="6" fill="#FF8C62"/><text x="74" y="745" fill="#C96239">首頁</text>
+    <rect x="140" y="715" width="18" height="18" rx="6" fill="#D4C5B8"/><text x="149" y="745" fill="#9A8879">健康</text>
+    <rect x="215" y="715" width="18" height="18" rx="6" fill="#D4C5B8"/><text x="224" y="745" fill="#9A8879">聯絡簿</text>
+    <rect x="290" y="715" width="18" height="18" rx="6" fill="#D4C5B8"/><text x="299" y="745" fill="#9A8879">設定</text>
+  </g>
+</svg>

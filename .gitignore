@@ -1,0 +1,44 @@
+# Java & Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.dependency-info/
+
+# Flutter & Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+/build/
+/frontend/build/
+
+# Web/JavaScript (if any)
+node_modules/
+dist/
+
+# IDEs & System files
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment configurations
+.env
+.env.local
+.env.*.local
+application-prod.properties
+application-local.properties

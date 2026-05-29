@@ -13,11 +13,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Create style guides and architecture schema
     - [x] Push baseline files to `dev` branch
 
-### 🟢 `PET-002`: Database Schema & JPA Entity Mapping
-*   **Description**: Define the MariaDB database schema and map the JPA entities (`CareLog`, `DailyHealthSummary`, `WeightLog`) along with Spring Data repositories.
+### 🟢 `PET-002`: Database Schema & MyBatis Mapper Mapping
+*   **Description**: Define the MariaDB database schema, write `schema.sql`, and map MyBatis mappers (`CareLogMapper`, `DailyHealthSummaryMapper`, `WeightLogMapper`) instead of JPA.
 *   **Checklist**:
-    - [x] Add Lombok-enabled entities
-    - [x] Implement JpaRepositories
+    - [x] Add Lombok-enabled POJOs
+    - [x] Implement MyBatis Mapper interfaces
+    - [x] Create schema.sql for table auto-creation
     - [x] Verify compile-time checks
 
 ### 🟢 `PET-003`: Docker Compose Configuration for MariaDB, Redis, & Kafka

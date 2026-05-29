@@ -1,7 +1,13 @@
 # 🐾 Pet Health Tracker - Active Status
 
 * **Current Active Task**: `PET-004` (Configure Kafka Producer & Care Event API endpoints)
-* **Status**: Starting coding implementation
+* **Status**: Implementing code
+* **Plan**:
+  - [ ] Fix Kafka serializer class paths in `application-dev.properties`
+  - [ ] Create DTO `CareLogRequest` and validate input constraints
+  - [ ] Create `KafkaProducerConfig` (topic creation) and `CareLogProducer` service
+  - [ ] Create `CareLogController` for `POST /api/v1/care-logs`
+  - [ ] Write integration test `CareLogControllerTest` to verify validation & Kafka message publishing
 
 ---
 

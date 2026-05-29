@@ -15,7 +15,7 @@
 ### 格式說明：
 - **type**: 提交類型（必填，如 `feat`, `fix` 等）。
 - **scope**: 影響範圍（選填），例如 `auth`, `kafka`, `ui`, `redis`。
-- **Ticket-ID**: Jira 等專案管理工具的工單號碼，請用中括號包起來，例如 `[PET-101]`。
+- **Ticket-ID**: Jira 等專案管理工具的工單號碼，請用中括號包起來，例如 `[PET-001]`。
 - **subject**: 簡短描述這次的變更（必填）。
 - **body**: 詳細描述變更的動機與內容（選填，與標題需空一行）。
 - **footer**: 用於標註 Breaking Changes 或再次關聯 Issue（選填）。
@@ -35,7 +35,7 @@
 
 **⭐ 範例 1：新增功能並綁定 Jira 工單**
 ```text
-feat(kafka): [PET-101] 實作寵物餵食事件 Kafka Consumer
+feat(kafka): [PET-006] 實作寵物餵食事件 Kafka Consumer
 
 - 監聽 pet-events 主題
 - 接收餵食事件後寫入 Redis 及排程寫入 MariaDB
@@ -43,12 +43,12 @@ feat(kafka): [PET-101] 實作寵物餵食事件 Kafka Consumer
 
 **⭐ 範例 2：修復 Bug**
 ```text
-fix(redis): [PET-205] 修正飲水計時器過期通知未觸發問題
+fix(redis): [PET-007] 修正飲水計時器過期通知未觸發問題
 
 修正了 Redis Keyevent 訂閱連線中斷後，未能自動重新連接的 Bug。
 ```
 
 **⭐ 範例 3：未分 scope 的小修改**
 ```text
-chore: [PET-302] 升級 Flutter 依賴套件版本
+chore: [PET-012] 升級 Flutter 依賴套件版本
 ```

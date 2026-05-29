@@ -40,5 +40,5 @@
 - **State Management**: Use clean separation of state from UI (e.g., Riverpod or Provider as chosen).
 
 ### 4. Git Commit Rules
-- Follow **Conventional Commits** combined with Jira ticket tracking (e.g., `feat(ui): [PET-101] Add water timer countdown`).
+- Follow **Conventional Commits** combined with Jira ticket tracking (e.g., `feat(ui): [PET-010] Add water timer countdown`).
 - See [GIT-COMMIT.md](docs/GIT-COMMIT.md) for full details.

@@ -136,8 +136,15 @@ This document lists all development tasks organized by Phase, mapping directly t
 
 ## 📋 Phase 5: End-to-End & Polish
 
-### ⬜ `PET-017`: End-to-End Simulation Tests
+### 🟢 `PET-017`: End-to-End Simulation Tests
 *   **Description**: Simulate active days by firing mock HTTP and Kafka events (e.g., drinking events, missed water intervals, weight gains) and verifying that the database stores logs correctly, Redis triggers alarms, and Flutter UI updates instantly.
+*   **Checklist**:
+    - [x] Create comprehensive EndToEndSimulationTest verifying event flows
+    - [x] Mock Kafka ingestion and test status increment metrics
+    - [x] Trigger Redis key expiration and verify mock dehydration alert notifications
 
-### ⬜ `PET-018`: Final UI Polish & Transitions
+### 🟢 `PET-018`: Final UI Polish & Transitions
 *   **Description**: Add sleek glassmorphism effects, page transition animations, and ensure clean error boundaries and loading indicators across all UI screens.
+*   **Checklist**:
+    - [x] Create custom glassmorphism BackdropFilter container card
+    - [x] Restyle HomeScreen dashboard grid to use premium GlassCard widgets

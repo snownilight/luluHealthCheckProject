@@ -1,11 +1,13 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-016` (Implement Growth Curve & Health Summary Charts UI)
+* **Current Active Task**: `PET-017` (End-to-End Simulation Tests) & `PET-018` (Final UI Polish & Transitions)
 * **Status**: Completed
 * **Plan**:
-  - [x] Build weekly weight trend line chart (with gradient fills)
-  - [x] Build weekly food vs water bar charts
-  - [x] Fetch data from the Caffeine-cached historical backend endpoints
+  - [x] Create comprehensive EndToEndSimulationTest verifying event flows
+  - [x] Mock Kafka ingestion and test status increment metrics
+  - [x] Trigger Redis key expiration and verify mock dehydration alert notifications
+  - [x] Create custom glassmorphism BackdropFilter container card
+  - [x] Restyle HomeScreen dashboard grid to use premium GlassCard widgets
 
 ---
 
@@ -26,6 +28,8 @@
 * `PET-014` (Done): Implement Care Timeline (Digital Contact Book) UI (Designed timeline layout with custom category icons, implemented a modal sheet for logging events with double validation, and added historical GET api to backend).
 * `PET-015` (Done): Implement WebSocket Connection & Real-time Home Dashboard State UI (Connected Flutter Stomp client to the backend WebSocket broker, wrapped status updates in a global Riverpod provider, and updated the dashboard UI with live progress indicators and alerts).
 * `PET-016` (Done): Implement Growth Curve & Health Summary Charts UI (Exposed trend endpoints via ApiService, created TrendsScreen showing curved weight graphs and nutrient comparison double-bar charts using fl_chart, and integrated it into the MainLayout navigation).
+* `PET-017` (Done): End-to-End Simulation Tests (Created comprehensive EndToEndSimulationTest verifying mock REST ingestion, simulated Kafka processing, Redis state tracking, and dehydration notification triggers).
+* `PET-018` (Done): Final UI Polish & Transitions (Created custom glassmorphism card component with dynamic light/dark opacity borders and BackdropFilter blur, and upgraded HomeScreen dashboard metrics layout).
 
 ---
 

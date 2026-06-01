@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'timeline_screen.dart';
+import 'trends_screen.dart';
 import 'settings_screen.dart';
 
 class MainLayout extends StatefulWidget {
@@ -16,12 +17,14 @@ class _MainLayoutState extends State<MainLayout> {
   final List<Widget> _screens = const [
     HomeScreen(),
     TimelineScreen(),
+    TrendsScreen(),
     SettingsScreen(),
   ];
 
   final List<String> _titles = const [
     'Dashboard',
     'Care Timeline',
+    'Trends & Analytics',
     'Settings',
   ];
 
@@ -60,6 +63,11 @@ class _MainLayoutState extends State<MainLayout> {
                   label: Text('Timeline'),
                 ),
                 NavigationRailDestination(
+                  icon: Icon(Icons.show_chart_outlined),
+                  selectedIcon: Icon(Icons.show_chart),
+                  label: Text('Trends'),
+                ),
+                NavigationRailDestination(
                   icon: Icon(Icons.settings_outlined),
                   selectedIcon: Icon(Icons.settings),
                   label: Text('Settings'),
@@ -87,6 +95,7 @@ class _MainLayoutState extends State<MainLayout> {
           ? null
           : BottomNavigationBar(
               currentIndex: _selectedIndex,
+              type: BottomNavigationBarType.fixed,
               onTap: (int index) {
                 setState(() {
                   _selectedIndex = index;
@@ -102,6 +111,11 @@ class _MainLayoutState extends State<MainLayout> {
                   icon: Icon(Icons.book_outlined),
                   activeIcon: Icon(Icons.book),
                   label: 'Timeline',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.show_chart_outlined),
+                  activeIcon: Icon(Icons.show_chart),
+                  label: 'Trends',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.settings_outlined),

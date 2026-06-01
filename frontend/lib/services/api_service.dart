@@ -31,8 +31,10 @@ class ApiService {
       final url = Uri.parse('$baseUrl/api/v1/trends/weight');
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return List<Map<String, dynamic>>.from(data);
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (body['data'] is List) {
+          return List<Map<String, dynamic>>.from(body['data']);
+        }
       }
     } catch (_) {}
     return [];
@@ -41,11 +43,13 @@ class ApiService {
   // Fetch monthly daily summary
   Future<List<Map<String, dynamic>>> getMonthlyDailySummary() async {
     try {
-      final url = Uri.parse('$baseUrl/api/v1/trends/summary');
+      final url = Uri.parse('$baseUrl/api/v1/trends/monthly-summary');
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return List<Map<String, dynamic>>.from(data);
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (body['data'] is List) {
+          return List<Map<String, dynamic>>.from(body['data']);
+        }
       }
     } catch (_) {}
     return [];

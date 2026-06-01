@@ -42,3 +42,4 @@ Thumbs.db
 .env.*.local
 application-prod.properties
 application-local.properties
+github_token.md

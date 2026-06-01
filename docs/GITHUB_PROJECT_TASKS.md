@@ -68,12 +68,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Persist care logs, weekly weight logs, and calculate daily summaries
     - [x] Verify transactional safety and rollback on DB failure
 
-### ⬜ `PET-009`: Configure Caffeine L1 Cache for Weight/Health Trend endpoints
+### 🟢 `PET-009`: Configure Caffeine L1 Cache for Weight/Health Trend endpoints
 *   **Description**: Configure Caffeine Cache to cache history statistics (e.g., last 12 weeks of weight logs and monthly daily summaries) for faster API responses.
 *   **Checklist**:
-    - [ ] Enable Spring Cache annotations (`@Cacheable`, `@CacheEvict`)
-    - [ ] Configure cache-specific eviction rules upon new logs ingestion
-    - [ ] Write test proving cached data is returned directly on second requests
+    - [x] Enable Spring Cache annotations (`@Cacheable`, `@CacheEvict`)
+    - [x] Configure cache-specific eviction rules upon new logs ingestion
+    - [x] Write test proving cached data is returned directly on second requests
 
 ---
 

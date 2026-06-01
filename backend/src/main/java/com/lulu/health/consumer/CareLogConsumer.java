@@ -5,8 +5,6 @@ import com.lulu.health.model.CareLog;
 import com.lulu.health.service.RedisStateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@ConditionalOnBean(value = {RedisConnectionFactory.class, CareLogPersistenceService.class})
 public class CareLogConsumer {
 
     public static final String WATER_TIMER_KEY = "pet:health:water:timer";

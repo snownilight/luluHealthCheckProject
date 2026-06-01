@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-008` (Implement Batch DB Persistence (MariaDB Write-behind))
+* **Current Active Task**: `PET-009` (Configure Caffeine L1 Cache for Weight/Health Trend endpoints)
 * **Status**: Completed
 * **Plan**:
-  - [x] Design an in-memory buffer or use Kafka batch consumers for persistence
-  - [x] Persist care logs, weekly weight logs, and calculate daily summaries
-  - [x] Verify transactional safety and rollback on DB failure
+  - [x] Add Caffeine cache dependency and configure L1 cache
+  - [x] Cache history statistics (last 12 weeks weight logs, monthly daily summaries)
+  - [x] Evict cache on new log entry (ensure Cache-aside consistency)
 
 ---
 
@@ -18,6 +18,7 @@
 * `PET-006` (Done): Configure Kafka Consumer for Care Events (Implemented consumer with multi-event routing, Redis status updater, and food/water safety timers).
 * `PET-007` (Done): Implement Redis Key Expiration (TTL) Listener for Dehydration Alert (Configured listener container, registered keyspace events listener, and integrated notification service stub).
 * `PET-008` (Done): Implement Batch DB Persistence (MariaDB Write-behind) (Designed thread-safe queue buffer, transactional persistence service, and scheduled flushing with rollback recovery).
+* `PET-009` (Done): Configure Caffeine L1 Cache for Weight/Health Trend endpoints (Configured CacheConfig with Caffeine specs, defined getWeeklyWeightTrend / getMonthlyDailySummary trends endpoints, and implemented cache eviction on batch persistence).
 
 ---
 

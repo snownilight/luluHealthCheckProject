@@ -6,7 +6,7 @@ import com.lulu.health.mapper.WeightLogMapper;
 import com.lulu.health.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +18,6 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@ConditionalOnBean(CareLogMapper.class)
 public class CareLogPersistenceService {
 
     private final CareLogMapper careLogMapper;
@@ -26,6 +25,7 @@ public class CareLogPersistenceService {
     private final DailyHealthSummaryMapper dailyHealthSummaryMapper;
 
     @Transactional
+    @CacheEvict(value = {"weeklyWeightTrend", "monthlyDailySummary"}, allEntries = true)
     public void persistBatch(List<CareLog> batch) {
         if (batch == null || batch.isEmpty()) {
             return;

@@ -20,4 +20,10 @@
         SELECT * FROM daily_health_summaries WHERE date = #{date}
     </select>
 
+    <select id="findRange" resultType="com.lulu.health.model.DailyHealthSummary">
+        SELECT * FROM daily_health_summaries 
+        WHERE date BETWEEN #{startDate} AND #{endDate} 
+        ORDER BY date ASC
+    </select>
+
 </mapper>

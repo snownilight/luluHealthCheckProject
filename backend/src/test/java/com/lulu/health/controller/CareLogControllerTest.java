@@ -20,6 +20,11 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import com.lulu.health.service.CareLogPersistenceService;
+import com.lulu.health.service.HealthTrendService;
+import com.lulu.health.service.RedisStateService;
+import com.lulu.health.listener.RedisKeyExpirationListener;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,12 +42,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration," +
         "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration," +
         "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration",
-    "spring.cache.type=none" // disable Caffeine cache in tests to avoid dependency issues
+    "spring.cache.type=none", // disable Caffeine cache in tests to avoid dependency issues
+    "spring.kafka.consumer.group-id=test-group"
 })
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @EmbeddedKafka(partitions = 1, topics = {KafkaProducerConfig.PET_EVENTS_TOPIC})
 public class CareLogControllerTest {
+
+    @MockBean
+    private CareLogPersistenceService careLogPersistenceService;
+
+    @MockBean
+    private HealthTrendService healthTrendService;
+
+    @MockBean
+    private RedisStateService redisStateService;
+
+    @MockBean
+    private RedisKeyExpirationListener redisKeyExpirationListener;
 
     @Autowired
     private MockMvc mockMvc;

@@ -104,12 +104,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Add dependencies to `pubspec.yaml`
     - [x] Setup project directories (screens, services, models)
 
-### ⬜ `PET-013`: Implement Flutter UI Base Theme, Layout & Navigation
+### 🟢 `PET-013`: Implement Flutter UI Base Theme, Layout & Navigation
 *   **Description**: Define the styling guidelines, color palette, custom icons, and navigation bar for a premium, warm design experience.
 *   **Checklist**:
-    - [ ] Choose a premium palette (warm/curated pastel colors, dark mode support)
-    - [ ] Design custom icons and navigation routes (Home, Contact Book, Settings)
-    - [ ] Implement responsive layout supporting different device sizes
+    - [x] Choose a premium palette (warm/curated pastel colors, dark mode support)
+    - [x] Design custom icons and navigation routes (Home, Contact Book, Settings)
+    - [x] Implement responsive layout supporting different device sizes
 
 ### ⬜ `PET-014`: Implement Care Timeline (Digital Contact Book) UI
 *   **Description**: Design the timeline page showing logged activities in chronological order. Allow users to manually log events (feeding, drinking, brushing, walking) with a quick modal sheet.

@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-012` (Initialize Flutter Project & configure dependencies)
+* **Current Active Task**: `PET-013` (Implement Flutter UI Base Theme, Layout & Navigation)
 * **Status**: Completed
 * **Plan**:
-  - [x] Init Flutter project under `frontend/`
-  - [x] Add dependencies to `pubspec.yaml`
-  - [x] Setup project directories (screens, services, models)
+  - [x] Choose a premium palette (warm/curated pastel colors, dark mode support)
+  - [x] Design custom icons and navigation routes (Home, Contact Book, Settings)
+  - [x] Implement responsive layout supporting different device sizes
 
 ---
 
@@ -22,6 +22,7 @@
 * `PET-010` (Done): Implement WebSocket (STOMP) server for real-time status push (Configured WebSocketConfig with STOMP endpoints, registered `/ws-pet` and broker `/topic`, and integrated SimpMessagingTemplate status publishing to `/topic/status` upon event ingestion).
 * `PET-011` (Done): Configure FCM (Firebase Cloud Messaging) Service for Push Notifications (Added firebase-admin dependency, implemented FirebaseConfig with fallback mock mode, and updated NotificationService to push alerts/log payload).
 * `PET-012` (Done): Initialize Flutter Project & configure dependencies (Created pubspec.yaml with State Management/Riverpod, Charts, WebSocket/Stomp clients, HTTP, and initialized lib structure under frontend/).
+* `PET-013` (Done): Implement Flutter UI Base Theme, Layout & Navigation (Designed AppTheme with curated warm color schemes for light/dark modes, implemented responsive MainLayout utilizing BottomNavigationBar and NavigationRail, and configured main entry routing).
 
 ---
 

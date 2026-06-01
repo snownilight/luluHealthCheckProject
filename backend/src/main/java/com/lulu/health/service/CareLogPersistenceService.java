@@ -107,4 +107,8 @@ public class CareLogPersistenceService {
             dailyHealthSummaryMapper.update(summary);
         }
     }
+
+    public List<CareLog> getAllLogs() {
+        return careLogMapper.findAll();
+    }
 }

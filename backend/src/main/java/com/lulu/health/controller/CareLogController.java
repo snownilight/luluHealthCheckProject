@@ -19,6 +19,7 @@ import java.util.UUID;
 public class CareLogController {
 
     private final CareLogProducer careLogProducer;
+    private final com.lulu.health.service.CareLogPersistenceService careLogPersistenceService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -41,5 +42,11 @@ public class CareLogController {
         careLogProducer.sendCareLogEvent(careLog);
 
         return ApiResponse.success("Care log accepted and queued for processing", careLog);
+    }
+
+    @GetMapping
+    public ApiResponse<java.util.List<CareLog>> getAllCareLogs() {
+        log.info("Retrieving all care logs from database");
+        return ApiResponse.success("Care logs retrieved successfully", careLogPersistenceService.getAllLogs());
     }
 }

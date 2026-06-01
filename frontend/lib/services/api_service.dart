@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final apiServiceProvider = Provider((ref) => ApiService(baseUrl: 'http://10.0.2.2:8080')); // 10.0.2.2 maps to localhost from Android emulator, fallback http://localhost:8080 for web/desktop
 
 class ApiService {
   final String baseUrl;

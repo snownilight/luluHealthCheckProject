@@ -137,4 +137,15 @@ public class CareLogControllerTest {
                         org.hamcrest.Matchers.containsString("value")
                 )));
     }
+
+    @Test
+    public void testGetAllCareLogs_Success() throws Exception {
+        org.mockito.Mockito.when(careLogPersistenceService.getAllLogs()).thenReturn(java.util.Collections.emptyList());
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/v1/care-logs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Care logs retrieved successfully"))
+                .andExpect(jsonPath("$.data").isArray());
+    }
 }

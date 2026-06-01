@@ -20,7 +20,7 @@ dependencies:
   # Networking & Real-time
   http: ^1.2.0
   web_socket_channel: ^2.4.1
-  stomp_dart_client: ^0.4.8
+  stomp_dart_client: ^3.0.1
 
   # UI Components & Visualization
   fl_chart: ^0.66.0

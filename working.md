@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-009` (Configure Caffeine L1 Cache for Weight/Health Trend endpoints)
+* **Current Active Task**: `PET-010` (Implement WebSocket (STOMP) server for real-time status push)
 * **Status**: Completed
 * **Plan**:
-  - [x] Add Caffeine cache dependency and configure L1 cache
-  - [x] Cache history statistics (last 12 weeks weight logs, monthly daily summaries)
-  - [x] Evict cache on new log entry (ensure Cache-aside consistency)
+  - [x] Enable WebSocket Message Broker configuration (`/topic`)
+  - [x] Setup STOMP endpoint `/ws-pet`
+  - [x] Publish the latest Redis status to `/topic/status` upon Kafka event processing
 
 ---
 
@@ -19,6 +19,7 @@
 * `PET-007` (Done): Implement Redis Key Expiration (TTL) Listener for Dehydration Alert (Configured listener container, registered keyspace events listener, and integrated notification service stub).
 * `PET-008` (Done): Implement Batch DB Persistence (MariaDB Write-behind) (Designed thread-safe queue buffer, transactional persistence service, and scheduled flushing with rollback recovery).
 * `PET-009` (Done): Configure Caffeine L1 Cache for Weight/Health Trend endpoints (Configured CacheConfig with Caffeine specs, defined getWeeklyWeightTrend / getMonthlyDailySummary trends endpoints, and implemented cache eviction on batch persistence).
+* `PET-010` (Done): Implement WebSocket (STOMP) server for real-time status push (Configured WebSocketConfig with STOMP endpoints, registered `/ws-pet` and broker `/topic`, and integrated SimpMessagingTemplate status publishing to `/topic/status` upon event ingestion).
 
 ---
 

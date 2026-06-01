@@ -79,12 +79,12 @@ This document lists all development tasks organized by Phase, mapping directly t
 
 ## 📋 Phase 3: Real-Time Sync & Notifications
 
-### ⬜ `PET-010`: Implement WebSocket (STOMP) server for real-time status push
+### 🟢 `PET-010`: Implement WebSocket (STOMP) server for real-time status push
 *   **Description**: Setup a WebSocket message broker to enable real-time UI updates on client apps. Whenever the pet's state changes in Redis, push the update to clients.
 *   **Checklist**:
-    - [ ] Enable WebSocket Message Broker configuration (`/topic`)
-    - [ ] Setup STOMP endpoint `/ws-pet`
-    - [ ] Publish the latest Redis status to `/topic/status` upon Kafka event processing
+    - [x] Enable WebSocket Message Broker configuration (`/topic`)
+    - [x] Setup STOMP endpoint `/ws-pet`
+    - [x] Publish the latest Redis status to `/topic/status` upon Kafka event processing
 
 ### ⬜ `PET-011`: Configure FCM (Firebase Cloud Messaging) Service for Push Notifications
 *   **Description**: Integrate Firebase Admin SDK to push push alerts (e.g., dehydration warnings) to connected Flutter clients. Support mocking notifications during dev.

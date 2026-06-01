@@ -28,11 +28,14 @@ public class CareLogConsumerTest {
     @Mock
     private CareLogPersistenceService careLogPersistenceService;
 
+    @Mock
+    private org.springframework.messaging.simp.SimpMessagingTemplate simpMessagingTemplate;
+
     private CareLogConsumer careLogConsumer;
 
     @BeforeEach
     public void setUp() {
-        careLogConsumer = new CareLogConsumer(redisStateService, careLogPersistenceService);
+        careLogConsumer = new CareLogConsumer(redisStateService, careLogPersistenceService, simpMessagingTemplate);
     }
 
     @Test
@@ -63,10 +66,16 @@ public class CareLogConsumerTest {
                 .value(50.0)
                 .build();
 
+        com.lulu.health.model.PetStatus mockStatus = com.lulu.health.model.PetStatus.builder()
+                .todayFoodIntakeG(50.0)
+                .build();
+        when(redisStateService.getPetStatus()).thenReturn(mockStatus);
+
         careLogConsumer.consumeCareLog(log);
 
         verify(redisStateService).incrementField("todayFoodIntakeG", 50.0);
         verify(redisStateService).setKeyWithTtl(CareLogConsumer.FOOD_TIMER_KEY, "active", CareLogConsumer.FOOD_TIMER_TTL_SECONDS);
+        verify(simpMessagingTemplate).convertAndSend("/topic/status", mockStatus);
         
         assertThat(careLogConsumer.getBuffer()).hasSize(1);
         assertThat(careLogConsumer.getBuffer().peek()).isEqualTo(log);

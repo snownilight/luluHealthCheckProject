@@ -30,6 +30,7 @@ public class CareLogConsumer {
 
     private final RedisStateService redisStateService;
     private final CareLogPersistenceService careLogPersistenceService;
+    private final org.springframework.messaging.simp.SimpMessagingTemplate simpMessagingTemplate;
     private final Queue<CareLog> buffer = new ConcurrentLinkedQueue<>();
 
     @KafkaListener(topics = KafkaProducerConfig.PET_EVENTS_TOPIC, groupId = "${spring.kafka.consumer.group-id}")
@@ -42,6 +43,7 @@ public class CareLogConsumer {
         log.info("Received care log event from Kafka: eventId={}, eventType={}, value={}",
                 careLog.getEventId(), careLog.getEventType(), careLog.getValue());
 
+        boolean stateChanged = false;
         try {
             if (careLog.getEventType() == null) {
                 log.warn("CareLog eventType is null, skipping update: {}", careLog.getEventId());
@@ -53,6 +55,7 @@ public class CareLogConsumer {
                     if (careLog.getValue() != null) {
                         redisStateService.incrementField("todayFoodIntakeG", careLog.getValue());
                         redisStateService.setKeyWithTtl(FOOD_TIMER_KEY, "active", FOOD_TIMER_TTL_SECONDS);
+                        stateChanged = true;
                     } else {
                         log.warn("Feeding event value is null: {}", careLog.getEventId());
                         return;
@@ -63,6 +66,7 @@ public class CareLogConsumer {
                     if (careLog.getValue() != null) {
                         redisStateService.incrementField("todayWaterIntakeMl", careLog.getValue());
                         redisStateService.setKeyWithTtl(WATER_TIMER_KEY, "active", WATER_TIMER_TTL_SECONDS);
+                        stateChanged = true;
                     } else {
                         log.warn("Drinking event value is null: {}", careLog.getEventId());
                         return;
@@ -72,6 +76,7 @@ public class CareLogConsumer {
                 case WEIGHT_UPDATE:
                     if (careLog.getValue() != null) {
                         redisStateService.updateField("lastWeightKg", careLog.getValue());
+                        stateChanged = true;
                     } else {
                         log.warn("Weight update event value is null: {}", careLog.getEventId());
                         return;
@@ -83,6 +88,7 @@ public class CareLogConsumer {
                             ? careLog.getEventTimestamp() 
                             : LocalDateTime.now();
                     redisStateService.updateField("lastActiveTime", activeTime);
+                    stateChanged = true;
                     break;
 
                 default:
@@ -94,6 +100,19 @@ public class CareLogConsumer {
             // Buffer for write-behind persistence
             buffer.add(careLog);
             log.debug("Buffered care log: {}. Current buffer size: {}", careLog.getEventId(), buffer.size());
+
+            // Retrieve latest status and push via websocket if state changed
+            if (stateChanged) {
+                try {
+                    com.lulu.health.model.PetStatus latestStatus = redisStateService.getPetStatus();
+                    if (latestStatus != null) {
+                        simpMessagingTemplate.convertAndSend("/topic/status", latestStatus);
+                        log.info("Successfully pushed updated status via WebSocket to /topic/status: {}", latestStatus);
+                    }
+                } catch (Exception wsEx) {
+                    log.error("Failed to push status update via WebSocket", wsEx);
+                }
+            }
 
         } catch (Exception e) {
             log.error("Error processing care log event: {}", careLog.getEventId(), e);

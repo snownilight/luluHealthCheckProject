@@ -86,23 +86,23 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Setup STOMP endpoint `/ws-pet`
     - [x] Publish the latest Redis status to `/topic/status` upon Kafka event processing
 
-### ⬜ `PET-011`: Configure FCM (Firebase Cloud Messaging) Service for Push Notifications
+### 🟢 `PET-011`: Configure FCM (Firebase Cloud Messaging) Service for Push Notifications
 *   **Description**: Integrate Firebase Admin SDK to push push alerts (e.g., dehydration warnings) to connected Flutter clients. Support mocking notifications during dev.
 *   **Checklist**:
-    - [ ] Integrate Firebase Admin dependency
-    - [ ] Implement `NotificationService` (supports mock logs + real FCM push)
-    - [ ] Verify message payloads include custom alert text and icons
+    - [x] Integrate Firebase Admin dependency
+    - [x] Implement `NotificationService` (supports mock logs + real FCM push)
+    - [x] Verify message payloads include custom alert text and icons
 
 ---
 
 ## 📋 Phase 4: Flutter Mobile App (Frontend)
 
-### ⬜ `PET-012`: Initialize Flutter Project & configure dependencies
+### 🟢 `PET-012`: Initialize Flutter Project & configure dependencies
 *   **Description**: Initialize the Flutter project structure and add core packages (e.g., `riverpod` for state management, `fl_chart` for graphs, `web_socket_channel` for WebSocket, etc.).
 *   **Checklist**:
-    - [ ] Init Flutter project under `frontend/`
-    - [ ] Add dependencies to `pubspec.yaml`
-    - [ ] Setup project directories (screens, services, models)
+    - [x] Init Flutter project under `frontend/`
+    - [x] Add dependencies to `pubspec.yaml`
+    - [x] Setup project directories (screens, services, models)
 
 ### ⬜ `PET-013`: Implement Flutter UI Base Theme, Layout & Navigation
 *   **Description**: Define the styling guidelines, color palette, custom icons, and navigation bar for a premium, warm design experience.

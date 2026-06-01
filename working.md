@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-010` (Implement WebSocket (STOMP) server for real-time status push)
+* **Current Active Task**: `PET-012` (Initialize Flutter Project & configure dependencies)
 * **Status**: Completed
 * **Plan**:
-  - [x] Enable WebSocket Message Broker configuration (`/topic`)
-  - [x] Setup STOMP endpoint `/ws-pet`
-  - [x] Publish the latest Redis status to `/topic/status` upon Kafka event processing
+  - [x] Init Flutter project under `frontend/`
+  - [x] Add dependencies to `pubspec.yaml`
+  - [x] Setup project directories (screens, services, models)
 
 ---
 
@@ -20,6 +20,8 @@
 * `PET-008` (Done): Implement Batch DB Persistence (MariaDB Write-behind) (Designed thread-safe queue buffer, transactional persistence service, and scheduled flushing with rollback recovery).
 * `PET-009` (Done): Configure Caffeine L1 Cache for Weight/Health Trend endpoints (Configured CacheConfig with Caffeine specs, defined getWeeklyWeightTrend / getMonthlyDailySummary trends endpoints, and implemented cache eviction on batch persistence).
 * `PET-010` (Done): Implement WebSocket (STOMP) server for real-time status push (Configured WebSocketConfig with STOMP endpoints, registered `/ws-pet` and broker `/topic`, and integrated SimpMessagingTemplate status publishing to `/topic/status` upon event ingestion).
+* `PET-011` (Done): Configure FCM (Firebase Cloud Messaging) Service for Push Notifications (Added firebase-admin dependency, implemented FirebaseConfig with fallback mock mode, and updated NotificationService to push alerts/log payload).
+* `PET-012` (Done): Initialize Flutter Project & configure dependencies (Created pubspec.yaml with State Management/Riverpod, Charts, WebSocket/Stomp clients, HTTP, and initialized lib structure under frontend/).
 
 ---
 

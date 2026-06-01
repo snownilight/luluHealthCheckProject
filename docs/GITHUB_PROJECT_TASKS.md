@@ -54,12 +54,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Implement logic to update `pet:status:current` values (e.g. cumulative daily food/water)
     - [x] Implement logic to refresh/set water/food timers (`pet:health:water:timer` / `pet:health:food:timer`)
 
-### ⬜ `PET-007`: Implement Redis Key Expiration (TTL) Listener for Dehydration Alert
+### 🟢 `PET-007`: Implement Redis Key Expiration (TTL) Listener for Dehydration Alert
 *   **Description**: Setup a Redis MessageListener to catch keyspace expiration events and trigger alert workflows when the water/food timer keys expire.
 *   **Checklist**:
-    - [ ] Configure `RedisMessageListenerContainer`
-    - [ ] Register listener for key expiry events (`__keyevent@0__:expired`)
-    - [ ] Catch `pet:health:water:timer` expiration and call Notification Service
+    - [x] Configure `RedisMessageListenerContainer`
+    - [x] Register listener for key expiry events (`__keyevent@0__:expired`)
+    - [x] Catch `pet:health:water:timer` expiration and call Notification Service
 
 ### ⬜ `PET-008`: Implement Batch DB Persistence (MariaDB Write-behind)
 *   **Description**: Buffer incoming logs processed by the Kafka Consumer and batch persist them to MariaDB to minimize DB I/O.

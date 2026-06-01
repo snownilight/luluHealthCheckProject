@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-006` (Configure Kafka Consumer for Care Events)
+* **Current Active Task**: `PET-007` (Implement Redis Key Expiration (TTL) Listener for Dehydration Alert)
 * **Status**: Completed
 * **Plan**:
-  - [x] Write `@KafkaListener` consumer service
-  - [x] Implement logic to update `pet:status:current` values (e.g. cumulative daily food/water)
-  - [x] Implement logic to refresh/set water/food timers (`pet:health:water:timer` / `pet:health:food:timer`)
+  - [x] Configure `RedisMessageListenerContainer`
+  - [x] Register listener for key expiry events (`__keyevent@0__:expired`)
+  - [x] Catch `pet:health:water:timer` expiration and call Notification Service
 
 ---
 
@@ -16,6 +16,7 @@
 * `PET-004` (Done): Configure Kafka Producer & Care Event API endpoints (validated DTO, serialization paths corrected, REST API publishes events, integration test passed).
 * `PET-005` (Done): Configure Redis Connection & Current State Machine Hash (Configured Lettuce pool, custom JSON RedisTemplate serialization, and RedisStateService wrapper).
 * `PET-006` (Done): Configure Kafka Consumer for Care Events (Implemented consumer with multi-event routing, Redis status updater, and food/water safety timers).
+* `PET-007` (Done): Implement Redis Key Expiration (TTL) Listener for Dehydration Alert (Configured listener container, registered keyspace events listener, and integrated notification service stub).
 
 ---
 

@@ -79,4 +79,20 @@ public class RedisStateService {
         log.info("Clearing PetStatus in Redis");
         redisTemplate.delete(PET_STATUS_KEY);
     }
+
+    /**
+     * Set a key with a value and a TTL in seconds.
+     */
+    public void setKeyWithTtl(String key, Object value, long ttlSeconds) {
+        log.info("Setting key: {} to value: {} with TTL: {}s", key, value, ttlSeconds);
+        redisTemplate.opsForValue().set(key, value, java.time.Duration.ofSeconds(ttlSeconds));
+    }
+
+    /**
+     * Delete a key.
+     */
+    public void deleteKey(String key) {
+        log.info("Deleting key: {}", key);
+        redisTemplate.delete(key);
+    }
 }

@@ -47,12 +47,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Implement `RedisStateService` to read/write state hashes
     - [x] Ensure serialization handles DTO models cleanly
 
-### ⬜ `PET-006`: Configure Kafka Consumer for Care Events
+### 🟢 `PET-006`: Configure Kafka Consumer for Care Events
 *   **Description**: Implement a Kafka Consumer listening to the `pet-events` topic to process incoming events sequentially. It should update the Redis current state hash and refresh health timer keys.
 *   **Checklist**:
-    - [ ] Write `@KafkaListener` consumer service
-    - [ ] Implement logic to update `pet:status:current` values (e.g. cumulative daily food/water)
-    - [ ] Implement logic to refresh/set water/food timers (`pet:health:water:timer` / `pet:health:food:timer`)
+    - [x] Write `@KafkaListener` consumer service
+    - [x] Implement logic to update `pet:status:current` values (e.g. cumulative daily food/water)
+    - [x] Implement logic to refresh/set water/food timers (`pet:health:water:timer` / `pet:health:food:timer`)
 
 ### ⬜ `PET-007`: Implement Redis Key Expiration (TTL) Listener for Dehydration Alert
 *   **Description**: Setup a Redis MessageListener to catch keyspace expiration events and trigger alert workflows when the water/food timer keys expire.

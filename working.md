@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-013` (Implement Flutter UI Base Theme, Layout & Navigation)
+* **Current Active Task**: `PET-015` (Implement WebSocket Connection & Real-time Home Dashboard State UI)
 * **Status**: Completed
 * **Plan**:
-  - [x] Choose a premium palette (warm/curated pastel colors, dark mode support)
-  - [x] Design custom icons and navigation routes (Home, Contact Book, Settings)
-  - [x] Implement responsive layout supporting different device sizes
+  - [x] Implement resilient WebSocket service (with automatic reconnect logic)
+  - [x] Create micro-animations for updating values (e.g., water glass filling up)
+  - [x] Show active countdown/progress timers for feeding/drinking status
 
 ---
 
@@ -23,6 +23,8 @@
 * `PET-011` (Done): Configure FCM (Firebase Cloud Messaging) Service for Push Notifications (Added firebase-admin dependency, implemented FirebaseConfig with fallback mock mode, and updated NotificationService to push alerts/log payload).
 * `PET-012` (Done): Initialize Flutter Project & configure dependencies (Created pubspec.yaml with State Management/Riverpod, Charts, WebSocket/Stomp clients, HTTP, and initialized lib structure under frontend/).
 * `PET-013` (Done): Implement Flutter UI Base Theme, Layout & Navigation (Designed AppTheme with curated warm color schemes for light/dark modes, implemented responsive MainLayout utilizing BottomNavigationBar and NavigationRail, and configured main entry routing).
+* `PET-014` (Done): Implement Care Timeline (Digital Contact Book) UI (Designed timeline layout with custom category icons, implemented a modal sheet for logging events with double validation, and added historical GET api to backend).
+* `PET-015` (Done): Implement WebSocket Connection & Real-time Home Dashboard State UI (Connected Flutter Stomp client to the backend WebSocket broker, wrapped status updates in a global Riverpod provider, and updated the dashboard UI with live progress indicators and alerts).
 
 ---
 

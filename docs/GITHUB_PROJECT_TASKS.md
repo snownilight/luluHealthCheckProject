@@ -111,19 +111,19 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Design custom icons and navigation routes (Home, Contact Book, Settings)
     - [x] Implement responsive layout supporting different device sizes
 
-### ⬜ `PET-014`: Implement Care Timeline (Digital Contact Book) UI
+### 🟢 `PET-014`: Implement Care Timeline (Digital Contact Book) UI
 *   **Description**: Design the timeline page showing logged activities in chronological order. Allow users to manually log events (feeding, drinking, brushing, walking) with a quick modal sheet.
 *   **Checklist**:
-    - [ ] Build vertical timeline layout with distinct event icons
-    - [ ] Create logging sheets with validation (e.g., numeric input only for weight/water)
-    - [ ] Integrate with HTTP API for submitting events
+    - [x] Build vertical timeline layout with distinct event icons
+    - [x] Create logging sheets with validation (e.g., numeric input only for weight/water)
+    - [x] Integrate with HTTP API for submitting events
 
-### ⬜ `PET-015`: Implement WebSocket Connection & Real-time Home Dashboard State UI
+### 🟢 `PET-015`: Implement WebSocket Connection & Real-time Home Dashboard State UI
 *   **Description**: Connect the Flutter app to the backend WebSocket broker and bind the incoming messages to dynamic UI widgets (e.g. real-time updating progress bars).
 *   **Checklist**:
-    - [ ] Implement resilient WebSocket service (with automatic reconnect logic)
-    - [ ] Create micro-animations for updating values (e.g., water glass filling up)
-    - [ ] Show active countdown/progress timers for feeding/drinking status
+    - [x] Implement resilient WebSocket service (with automatic reconnect logic)
+    - [x] Create micro-animations for updating values (e.g., water glass filling up)
+    - [x] Show active countdown/progress timers for feeding/drinking status
 
 ### ⬜ `PET-016`: Implement Growth Curve & Health Summary Charts UI
 *   **Description**: Use `fl_chart` to render smooth, responsive line graphs for the pet's weekly weight trends and daily food/water intake history.

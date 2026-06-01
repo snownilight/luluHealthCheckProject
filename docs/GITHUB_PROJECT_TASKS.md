@@ -125,12 +125,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Create micro-animations for updating values (e.g., water glass filling up)
     - [x] Show active countdown/progress timers for feeding/drinking status
 
-### ⬜ `PET-016`: Implement Growth Curve & Health Summary Charts UI
+### 🟢 `PET-016`: Implement Growth Curve & Health Summary Charts UI
 *   **Description**: Use `fl_chart` to render smooth, responsive line graphs for the pet's weekly weight trends and daily food/water intake history.
 *   **Checklist**:
-    - [ ] Build weekly weight trend line chart (with gradient fills)
-    - [ ] Build weekly food vs water bar charts
-    - [ ] Fetch data from the Caffeine-cached historical backend endpoints
+    - [x] Build weekly weight trend line chart (with gradient fills)
+    - [x] Build weekly food vs water bar charts
+    - [x] Fetch data from the Caffeine-cached historical backend endpoints
 
 ---
 

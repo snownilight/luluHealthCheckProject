@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-015` (Implement WebSocket Connection & Real-time Home Dashboard State UI)
+* **Current Active Task**: `PET-016` (Implement Growth Curve & Health Summary Charts UI)
 * **Status**: Completed
 * **Plan**:
-  - [x] Implement resilient WebSocket service (with automatic reconnect logic)
-  - [x] Create micro-animations for updating values (e.g., water glass filling up)
-  - [x] Show active countdown/progress timers for feeding/drinking status
+  - [x] Build weekly weight trend line chart (with gradient fills)
+  - [x] Build weekly food vs water bar charts
+  - [x] Fetch data from the Caffeine-cached historical backend endpoints
 
 ---
 
@@ -25,6 +25,7 @@
 * `PET-013` (Done): Implement Flutter UI Base Theme, Layout & Navigation (Designed AppTheme with curated warm color schemes for light/dark modes, implemented responsive MainLayout utilizing BottomNavigationBar and NavigationRail, and configured main entry routing).
 * `PET-014` (Done): Implement Care Timeline (Digital Contact Book) UI (Designed timeline layout with custom category icons, implemented a modal sheet for logging events with double validation, and added historical GET api to backend).
 * `PET-015` (Done): Implement WebSocket Connection & Real-time Home Dashboard State UI (Connected Flutter Stomp client to the backend WebSocket broker, wrapped status updates in a global Riverpod provider, and updated the dashboard UI with live progress indicators and alerts).
+* `PET-016` (Done): Implement Growth Curve & Health Summary Charts UI (Exposed trend endpoints via ApiService, created TrendsScreen showing curved weight graphs and nutrient comparison double-bar charts using fl_chart, and integrated it into the MainLayout navigation).
 
 ---
 

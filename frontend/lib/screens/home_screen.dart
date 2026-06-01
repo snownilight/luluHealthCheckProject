@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../services/pet_status_provider.dart';
+import '../widgets/glass_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -62,7 +63,7 @@ class HomeScreen extends ConsumerWidget {
                   SizedBox(height: 8),
                   Text(
                     'Track and monitor O-Lulu\'s health status in real-time.',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
                     ),
@@ -184,18 +185,9 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+    return GlassCard(
+      padding: const EdgeInsets.all(16),
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(

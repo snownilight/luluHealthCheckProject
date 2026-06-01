@@ -274,8 +274,10 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                             final parsedDate = DateTime.tryParse(data[idx]['recordedAt'] ?? '') ?? DateTime.now();
                             return Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              style: const TextStyle(color: Colors.grey, fontSize: 10),
-                              child: Text(DateFormat('MM/dd').format(parsedDate)),
+                              child: Text(
+                                DateFormat('MM/dd').format(parsedDate),
+                                style: const TextStyle(color: Colors.grey, fontSize: 10),
+                              ),
                             );
                           }
                           return const Text('');
@@ -419,8 +421,10 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                             final parsedDate = DateTime.tryParse(data[idx]['date'] ?? '') ?? DateTime.now();
                             return Padding(
                               padding: const EdgeInsets.only(top: 8.0),
-                              style: const TextStyle(color: Colors.grey, fontSize: 10),
-                              child: Text(DateFormat('E').format(parsedDate)), // Weekday name
+                              child: Text(
+                                DateFormat('E').format(parsedDate),
+                                style: const TextStyle(color: Colors.grey, fontSize: 10),
+                              ),
                             );
                           }
                           return const Text('');

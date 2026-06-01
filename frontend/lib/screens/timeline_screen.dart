@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -223,7 +224,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                           'Note: $note',
                                           style: const TextStyle(
                                             fontSize: 13,
-                                            style: FontStyle.italic,
+                                            fontStyle: FontStyle.italic,
                                           ),
                                         ),
                                       ],

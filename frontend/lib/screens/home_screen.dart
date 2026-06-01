@@ -248,25 +248,6 @@ class _MetricCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
-
-// Standard fallback class for compilation safety
-class ColorsWhiteee {
-  static const Color white = Colors.white70;
-}
-
-extension on TextStyle {
-  // Add fallback styling helper if needed
-}
-
-class ColorsWhiteeeHelper {
-  static const Color white = Colors.white70;
-}
-const Color ColorsWhiteeeColor = Colors.white70;
-extension on List {
-  // helper
-}
-const ColorsWhiteee = Colors.white70;

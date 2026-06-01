@@ -40,12 +40,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Implement event validation (prevent negative/excessive inputs)
     - [x] Write integration test verifying REST controller publishes to Kafka
 
-### ⬜ `PET-005`: Configure Redis Connection & Current State Machine Hash
+### 🟢 `PET-005`: Configure Redis Connection & Current State Machine Hash
 *   **Description**: Configure Redis connection pool in Spring Boot and define repository/helper classes to read/write the pet's current state (`pet:status:current`).
 *   **Checklist**:
-    - [ ] Define Redis connection properties & configs
-    - [ ] Implement `RedisStateService` to read/write state hashes
-    - [ ] Ensure serialization handles DTO models cleanly
+    - [x] Define Redis connection properties & configs
+    - [x] Implement `RedisStateService` to read/write state hashes
+    - [x] Ensure serialization handles DTO models cleanly
 
 ### ⬜ `PET-006`: Configure Kafka Consumer for Care Events
 *   **Description**: Implement a Kafka Consumer listening to the `pet-events` topic to process incoming events sequentially. It should update the Redis current state hash and refresh health timer keys.

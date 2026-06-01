@@ -2,6 +2,7 @@ package com.lulu.health.consumer;
 
 import com.lulu.health.model.CareLog;
 import com.lulu.health.model.EventType;
+import com.lulu.health.service.CareLogPersistenceService;
 import com.lulu.health.service.RedisStateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -21,17 +25,21 @@ public class CareLogConsumerTest {
     @Mock
     private RedisStateService redisStateService;
 
+    @Mock
+    private CareLogPersistenceService careLogPersistenceService;
+
     private CareLogConsumer careLogConsumer;
 
     @BeforeEach
     public void setUp() {
-        careLogConsumer = new CareLogConsumer(redisStateService);
+        careLogConsumer = new CareLogConsumer(redisStateService, careLogPersistenceService);
     }
 
     @Test
     public void testConsumeCareLog_NullEvent() {
         careLogConsumer.consumeCareLog(null);
-        verifyNoInteractions(redisStateService);
+        verifyNoInteractions(redisStateService, careLogPersistenceService);
+        assertThat(careLogConsumer.getBuffer()).isEmpty();
     }
 
     @Test
@@ -43,7 +51,8 @@ public class CareLogConsumerTest {
                 .build();
 
         careLogConsumer.consumeCareLog(log);
-        verifyNoInteractions(redisStateService);
+        verifyNoInteractions(redisStateService, careLogPersistenceService);
+        assertThat(careLogConsumer.getBuffer()).isEmpty();
     }
 
     @Test
@@ -58,6 +67,9 @@ public class CareLogConsumerTest {
 
         verify(redisStateService).incrementField("todayFoodIntakeG", 50.0);
         verify(redisStateService).setKeyWithTtl(CareLogConsumer.FOOD_TIMER_KEY, "active", CareLogConsumer.FOOD_TIMER_TTL_SECONDS);
+        
+        assertThat(careLogConsumer.getBuffer()).hasSize(1);
+        assertThat(careLogConsumer.getBuffer().peek()).isEqualTo(log);
     }
 
     @Test
@@ -71,6 +83,7 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verifyNoInteractions(redisStateService);
+        assertThat(careLogConsumer.getBuffer()).isEmpty();
     }
 
     @Test
@@ -85,6 +98,8 @@ public class CareLogConsumerTest {
 
         verify(redisStateService).incrementField("todayWaterIntakeMl", 80.0);
         verify(redisStateService).setKeyWithTtl(CareLogConsumer.WATER_TIMER_KEY, "active", CareLogConsumer.WATER_TIMER_TTL_SECONDS);
+        
+        assertThat(careLogConsumer.getBuffer()).hasSize(1);
     }
 
     @Test
@@ -98,6 +113,7 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verifyNoInteractions(redisStateService);
+        assertThat(careLogConsumer.getBuffer()).isEmpty();
     }
 
     @Test
@@ -111,6 +127,7 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verify(redisStateService).updateField("lastWeightKg", 3.5);
+        assertThat(careLogConsumer.getBuffer()).hasSize(1);
     }
 
     @Test
@@ -124,6 +141,7 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verifyNoInteractions(redisStateService);
+        assertThat(careLogConsumer.getBuffer()).isEmpty();
     }
 
     @Test
@@ -138,6 +156,7 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verify(redisStateService).updateField("lastActiveTime", now);
+        assertThat(careLogConsumer.getBuffer()).hasSize(1);
     }
 
     @Test
@@ -151,6 +170,7 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verify(redisStateService).updateField(eq("lastActiveTime"), any(LocalDateTime.class));
+        assertThat(careLogConsumer.getBuffer()).hasSize(1);
     }
 
     @Test
@@ -164,6 +184,7 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verifyNoInteractions(redisStateService);
+        assertThat(careLogConsumer.getBuffer()).hasSize(1);
     }
 
     @Test
@@ -180,5 +201,40 @@ public class CareLogConsumerTest {
         careLogConsumer.consumeCareLog(log);
 
         verify(redisStateService).incrementField("todayFoodIntakeG", 50.0);
+        assertThat(careLogConsumer.getBuffer()).isEmpty(); // Should not buffer if pre-processing failed
+    }
+
+    @Test
+    public void testFlushBuffer_Success() {
+        CareLog log1 = CareLog.builder().eventId("1").eventType(EventType.FEEDING).value(50.0).build();
+        CareLog log2 = CareLog.builder().eventId("2").eventType(EventType.DRINKING).value(80.0).build();
+
+        careLogConsumer.getBuffer().add(log1);
+        careLogConsumer.getBuffer().add(log2);
+
+        careLogConsumer.flushBuffer();
+
+        verify(careLogPersistenceService).persistBatch(argThat(list -> 
+                list.size() == 2 && 
+                list.contains(log1) && 
+                list.contains(log2)
+        ));
+        assertThat(careLogConsumer.getBuffer()).isEmpty();
+    }
+
+    @Test
+    public void testFlushBuffer_FailureAndRetry() {
+        CareLog logEntry = CareLog.builder().eventId("1").eventType(EventType.FEEDING).value(50.0).build();
+        careLogConsumer.getBuffer().add(logEntry);
+
+        doThrow(new RuntimeException("DB Connection Failed")).when(careLogPersistenceService).persistBatch(anyList());
+
+        careLogConsumer.flushBuffer();
+
+        // Verify batch was attempted
+        verify(careLogPersistenceService).persistBatch(anyList());
+        // Verify item was put back in the buffer to retry
+        assertThat(careLogConsumer.getBuffer()).hasSize(1);
+        assertThat(careLogConsumer.getBuffer().peek()).isEqualTo(logEntry);
     }
 }

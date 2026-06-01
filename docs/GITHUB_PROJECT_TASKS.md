@@ -61,12 +61,12 @@ This document lists all development tasks organized by Phase, mapping directly t
     - [x] Register listener for key expiry events (`__keyevent@0__:expired`)
     - [x] Catch `pet:health:water:timer` expiration and call Notification Service
 
-### ⬜ `PET-008`: Implement Batch DB Persistence (MariaDB Write-behind)
+### 🟢 `PET-008`: Implement Batch DB Persistence (MariaDB Write-behind)
 *   **Description**: Buffer incoming logs processed by the Kafka Consumer and batch persist them to MariaDB to minimize DB I/O.
 *   **Checklist**:
-    - [ ] Design an in-memory buffer or use Kafka batch consumers for persistence
-    - [ ] Persist care logs, weekly weight logs, and calculate daily summaries
-    - [ ] Verify transactional safety and rollback on DB failure
+    - [x] Design an in-memory buffer or use Kafka batch consumers for persistence
+    - [x] Persist care logs, weekly weight logs, and calculate daily summaries
+    - [x] Verify transactional safety and rollback on DB failure
 
 ### ⬜ `PET-009`: Configure Caffeine L1 Cache for Weight/Health Trend endpoints
 *   **Description**: Configure Caffeine Cache to cache history statistics (e.g., last 12 weeks of weight logs and monthly daily summaries) for faster API responses.

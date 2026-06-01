@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-007` (Implement Redis Key Expiration (TTL) Listener for Dehydration Alert)
+* **Current Active Task**: `PET-008` (Implement Batch DB Persistence (MariaDB Write-behind))
 * **Status**: Completed
 * **Plan**:
-  - [x] Configure `RedisMessageListenerContainer`
-  - [x] Register listener for key expiry events (`__keyevent@0__:expired`)
-  - [x] Catch `pet:health:water:timer` expiration and call Notification Service
+  - [x] Design an in-memory buffer or use Kafka batch consumers for persistence
+  - [x] Persist care logs, weekly weight logs, and calculate daily summaries
+  - [x] Verify transactional safety and rollback on DB failure
 
 ---
 
@@ -17,6 +17,7 @@
 * `PET-005` (Done): Configure Redis Connection & Current State Machine Hash (Configured Lettuce pool, custom JSON RedisTemplate serialization, and RedisStateService wrapper).
 * `PET-006` (Done): Configure Kafka Consumer for Care Events (Implemented consumer with multi-event routing, Redis status updater, and food/water safety timers).
 * `PET-007` (Done): Implement Redis Key Expiration (TTL) Listener for Dehydration Alert (Configured listener container, registered keyspace events listener, and integrated notification service stub).
+* `PET-008` (Done): Implement Batch DB Persistence (MariaDB Write-behind) (Designed thread-safe queue buffer, transactional persistence service, and scheduled flushing with rollback recovery).
 
 ---
 

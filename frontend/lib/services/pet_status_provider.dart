@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/pet_status.dart';
 import 'websocket_service.dart';
@@ -24,7 +25,7 @@ final petStatusProvider = StateNotifierProvider<PetStatusNotifier, PetStatus>((r
 final webSocketServiceProvider = Provider<WebSocketService>((ref) {
   // Use http://localhost:8080 or ws://localhost:8080/ws-pet for WebSocket STOMP
   final wsService = WebSocketService(
-    wsUrl: 'ws://localhost:8080/ws-pet',
+    wsUrl: kIsWeb ? 'ws://localhost:8080/ws-pet' : 'ws://10.0.2.2:8080/ws-pet',
     onStatusReceived: (status) {
       ref.read(petStatusProvider.notifier).updateStatus(status);
     },

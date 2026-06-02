@@ -3,16 +3,15 @@ package com.lulu.health.listener;
 import com.lulu.health.consumer.CareLogConsumer;
 import com.lulu.health.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@ConditionalOnBean(RedisConnectionFactory.class)
+@Profile("!test")
 public class RedisKeyExpirationListener extends KeyExpirationEventMessageListener {
 
     private final NotificationService notificationService;

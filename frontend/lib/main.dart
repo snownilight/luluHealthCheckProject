@@ -17,7 +17,7 @@ class PetHealthApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pet Health Tracker',
+      title: '智慧成長觀測站',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system, // Automatic Light/Dark Mode based on OS settings

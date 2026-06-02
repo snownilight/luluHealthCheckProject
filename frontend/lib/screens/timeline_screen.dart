@@ -1648,7 +1648,13 @@ class PackageHttpInvocationHelper {
 
 class _MockResponse {
   final int statusCode = 200;
-  final String body = '{"code": 200, "message": "Success", "data": []}';
+  final String body = '{"code": 200, "message": "Success", "data": ['
+      '{"id":1,"eventType":"FEEDING","value":45.0,"unit":"g","note":"吃了美味的雞肉罐頭，胃口很好！","operator":"Me","eventTimestamp":"2026-06-02T08:30:00Z"},'
+      '{"id":2,"eventType":"DRINKING","value":50.0,"unit":"ml","note":"自動飲水機飲水","operator":"二姐","eventTimestamp":"2026-06-02T10:15:00Z"},'
+      '{"id":3,"eventType":"WEIGHT","value":4.80,"unit":"kg","note":"體重穩定，繼續保持","operator":"Me","eventTimestamp":"2026-06-02T12:00:00Z"},'
+      '{"id":4,"eventType":"EXCRETION","value":null,"unit":"","note":"便便正常，沒有軟便","operator":"三妹","eventTimestamp":"2026-06-02T14:45:00Z"},'
+      '{"id":5,"eventType":"ACTIVITY","value":20.0,"unit":"分鐘","note":"玩逗貓棒，非常活潑！","operator":"Me","eventTimestamp":"2026-06-02T16:30:00Z"}'
+      ']}';
 }
 
 // Add Log Bottom Sheet Form

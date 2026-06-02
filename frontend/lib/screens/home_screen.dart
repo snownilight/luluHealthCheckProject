@@ -230,12 +230,17 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
 
+                  // Real-time Status Card
+                  const _RealTimeStatusCard(),
+                  const SizedBox(height: 24),
+
                   // Section Title
                   const Text(
-                    'O-Lulu 的即時狀態',
+                    '詳細數據指標',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Color(0xFF35261D),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -382,4 +387,170 @@ class _MetricCard extends StatelessWidget {
         ),
     );
   }
+}
+
+class _RealTimeStatusCard extends StatelessWidget {
+  const _RealTimeStatusCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 158,
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF0DC),
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF35261D).withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Left side content
+          Positioned(
+            left: 20,
+            top: 20,
+            bottom: 16,
+            right: 140, // leave space for cat illustration on the right
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '即時狀態',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFFD56C44),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Luna 今天很\n穩定',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF35261D),
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  '飲水、進食與活動量都在安全區間。',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF7B6759),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const Spacer(),
+                // 剛剛同步 badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE7F7EE),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF35B77D),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        '剛剛同步',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF2E7D5A),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Right side illustration
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 140,
+            child: CustomPaint(
+              painter: LunaIllustrationPainter(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class LunaIllustrationPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // 1. Orange background circle (cx = size.width - 92, cy=12, r=56, fill=#FFE1A8, opacity=.8)
+    final bgPaint = Paint()
+      ..color = const Color(0xFFFFE1A8).withOpacity(0.8)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(size.width - 92, 12), 56, bgPaint);
+
+    // 2. Ears: Left (cx = size.width - 148, cy=7, rx=14, ry=19) & Right (cx = size.width - 84, cy=7, rx=14, ry=19)
+    final earPaint = Paint()
+      ..color = const Color(0xFFD98757)
+      ..style = PaintingStyle.fill;
+    canvas.drawOval(Rect.fromCenter(center: Offset(size.width - 148, 7), width: 28, height: 38), earPaint);
+    canvas.drawOval(Rect.fromCenter(center: Offset(size.width - 84, 7), width: 28, height: 38), earPaint);
+
+    // 3. Bottom detail (cx = size.width - 108, cy=91, rx=34, ry=31)
+    final bodyPaint = Paint()
+      ..color = const Color(0xFFF2B879)
+      ..style = PaintingStyle.fill;
+    canvas.drawOval(Rect.fromCenter(center: Offset(size.width - 108, 91), width: 68, height: 62), bodyPaint);
+
+    // 4. Head/Face (cx = size.width - 118, cy=28, rx=43, ry=37)
+    final headPaint = Paint()
+      ..color = const Color(0xFFFFD29D)
+      ..style = PaintingStyle.fill;
+    canvas.drawOval(Rect.fromCenter(center: Offset(size.width - 118, 28), width: 86, height: 74), headPaint);
+
+    // 5. Muzzle/Mouth area (cx = size.width - 119, cy=63, rx=18, ry=12)
+    final muzzlePaint = Paint()
+      ..color = const Color(0xFFFFF5E8)
+      ..style = PaintingStyle.fill;
+    canvas.drawOval(Rect.fromCenter(center: Offset(size.width - 119, 63), width: 36, height: 24), muzzlePaint);
+
+    // 6. Eyes (cx = size.width - 135, cy=50, r=3) & (cx = size.width - 105, cy=50, r=3)
+    final eyePaint = Paint()
+      ..color = const Color(0xFF443226)
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(size.width - 135, 50), 3, eyePaint);
+    canvas.drawCircle(Offset(size.width - 105, 50), 3, eyePaint);
+
+    // 7. Nose (cx = size.width - 119, cy=65, rx=5, ry=4)
+    final nosePaint = Paint()
+      ..color = const Color(0xFF443226)
+      ..style = PaintingStyle.fill;
+    canvas.drawOval(Rect.fromCenter(center: Offset(size.width - 119, 65), width: 10, height: 8), nosePaint);
+
+    // 8. Fish/Tag detail (x = size.width - 54, y=94, width=28, height=11, rx=6)
+    final tagPaint = Paint()
+      ..color = const Color(0xFFF2B879)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(size.width - 54, 94, 28, 11), const Radius.circular(6)), tagPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

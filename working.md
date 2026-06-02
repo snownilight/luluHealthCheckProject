@@ -1,17 +1,15 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-017` (End-to-End Simulation Tests) & `PET-018` (Final UI Polish & Transitions)
-* **Status**: Completed
+* **Current Active Task**: None (Waiting for Assignment)
+* **Status**: Idle
 * **Plan**:
-  - [x] Create comprehensive EndToEndSimulationTest verifying event flows
-  - [x] Mock Kafka ingestion and test status increment metrics
-  - [x] Trigger Redis key expiration and verify mock dehydration alert notifications
-  - [x] Create custom glassmorphism BackdropFilter container card
-  - [x] Restyle HomeScreen dashboard grid to use premium GlassCard widgets
 
 ---
 
 ## 🟢 Completed Tasks
+* `PET-019` (Done): UI - Background & Decorative Circles (Cozy Warm Cream background with top-right, center-left, and bottom-right decorative colored circles).
+* `PET-017` (Done): End-to-End Simulation Tests.
+* `PET-018` (Done): Final UI Polish & Transitions.
 * `PET-001` (Done): Environment/Architecture docs setup.
 * `PET-002` (Done): Database Schema & MyBatis Mapper Mapping (Refactored from JPA to MyBatis XML; table structures auto-initialized via `schema.sql`).
 * `PET-003` (Done): Docker Compose setup (MariaDB, Redis with Ex notify, Kafka KRaft).

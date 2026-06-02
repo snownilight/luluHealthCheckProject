@@ -1,12 +1,12 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-028` (實作跨頁面方案 B 自訂背景裝飾圓圈與主導覽列美化)
+* **Current Active Task**: `PET-029` (實作「成長觀測」趨勢圖表頁面風格重構)
 * **Status**: Done
 * **Plan**:
-  - [x] 重構 `main_layout.dart` 的底部導覽列（BottomNavigationBar），使其呈現浮動圓角卡片與陰影效果
-  - [x] 在 `trends_screen.dart` 中新增方案 B 專屬分頁裝飾圓圈與 Cozy Warm Cream 背景色
-  - [x] 在 `timeline_screen.dart` 中新增方案 B 專屬分頁裝飾圓圈與 Cozy Warm Cream 背景色
-  - [x] 在 `settings_screen.dart` 中新增方案 B 專屬分頁裝飾圓圈與 Cozy Warm Cream 背景色
+  - [x] 重構體重折線圖卡片，採用圓角 24 像素的白底 Glassmorphic 卡片
+  - [x] 調整 `fl_chart` 的折線色彩為珊瑚橘（`#E8875C`）與半透明漸層填充
+  - [x] 重構進食/飲水每日直條圖卡片，採用圓角 24 像素的 Glassmorphic 樣式
+  - [x] 調整直條圖的色彩配色為飲水藍（`#3E91B8`）與進食暖金（`#C97922`）
 
 ---
 

@@ -219,12 +219,20 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
 
   // Weight Trend Line Chart
   Widget _buildWeightChartCard(List<Map<String, dynamic>> data) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (data.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Center(child: Text('暫無體重趨勢數據。')),
+      return Container(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.85),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+            width: 1.5,
+          ),
         ),
+        padding: const EdgeInsets.all(24),
+        child: const Center(child: Text('暫無體重趨勢數據。')),
       );
     }
 
@@ -237,11 +245,22 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
       spots.add(FlSpot(i.toDouble(), weight));
     }
 
-    return Card(
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+          width: 1.5,
+        ),
+        boxShadow: [
+          if (!isDark)
+            BoxShadow(
+              color: const Color(0xFF35261D).withOpacity(0.04),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.only(top: 24, bottom: 16, left: 16, right: 24),
@@ -256,7 +275,11 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                   children: [
                     Text(
                       '${data.last['weightKg'].toStringAsFixed(2)} kg',
-                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 22, 
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : const Color(0xFF35261D),
+                      ),
                     ),
                     const Text('目前體重', style: TextStyle(fontSize: 12, color: Colors.grey)),
                   ],
@@ -264,12 +287,12 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.teal.withOpacity(0.15),
+                    color: const Color(0xFFE8875C).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(
                     '成長曲線',
-                    style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: 11),
+                    style: TextStyle(color: Color(0xFFE8875C), fontWeight: FontWeight.bold, fontSize: 11),
                   ),
                 ),
               ],
@@ -285,7 +308,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                     show: true,
                     drawVerticalLine: false,
                     getDrawingHorizontalLine: (val) => FlLine(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: isDark ? const Color(0xFF332924) : const Color(0xFFF2EAE5),
                       strokeWidth: 1,
                     ),
                   ),
@@ -296,10 +319,10 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                     leftTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 38,
+                        reservedSize: 45,
                         getTitlesWidget: (value, meta) {
                           return Text(
-                            '${value.toStringAsFixed(1)}k',
+                            '${value.toStringAsFixed(1)} kg',
                             style: const TextStyle(color: Colors.grey, fontSize: 10),
                           );
                         },
@@ -330,7 +353,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                     LineChartBarData(
                       spots: spots,
                       isCurved: true,
-                      color: Colors.teal,
+                      color: const Color(0xFFE8875C),
                       barWidth: 3.5,
                       isStrokeCapRound: true,
                       dotData: FlDotData(
@@ -338,7 +361,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                         getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                           radius: 5,
                           color: Colors.white,
-                          strokeColor: Colors.teal,
+                          strokeColor: const Color(0xFFE8875C),
                           strokeWidth: 3,
                         ),
                       ),
@@ -346,8 +369,8 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                         show: true,
                         gradient: LinearGradient(
                           colors: [
-                            Colors.teal.withOpacity(0.3),
-                            Colors.teal.withOpacity(0.0),
+                            const Color(0xFFE8875C).withOpacity(0.2),
+                            const Color(0xFFE8875C).withOpacity(0.0),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -366,12 +389,20 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
 
   // Nutrient History Double Bar Chart
   Widget _buildNutrientChartCard(List<Map<String, dynamic>> data) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (data.isEmpty) {
-      return const Card(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Center(child: Text('暫無每日營養攝取數據。')),
+      return Container(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.85),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+            width: 1.5,
+          ),
         ),
+        padding: const EdgeInsets.all(24),
+        child: const Center(child: Text('暫無每日營養攝取數據。')),
       );
     }
 
@@ -386,26 +417,37 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
           barRods: [
             BarChartRodData(
               toY: food,
-              color: Colors.orangeAccent,
-              width: 8,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+              color: const Color(0xFFC97922),
+              width: 9,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             ),
             BarChartRodData(
               toY: water,
-              color: Colors.blueAccent,
-              width: 8,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+              color: const Color(0xFF3E91B8),
+              width: 9,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
             ),
           ],
         ),
       );
     }
 
-    return Card(
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.85),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+          width: 1.5,
+        ),
+        boxShadow: [
+          if (!isDark)
+            BoxShadow(
+              color: const Color(0xFF35261D).withOpacity(0.04),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.only(top: 24, bottom: 16, left: 16, right: 16),
@@ -416,9 +458,9 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                _buildLegendItem('進食 (g)', Colors.orangeAccent),
+                _buildLegendItem('進食 (g)', const Color(0xFFC97922)),
                 const SizedBox(width: 16),
-                _buildLegendItem('飲水 (ml)', Colors.blueAccent),
+                _buildLegendItem('飲水 (ml)', const Color(0xFF3E91B8)),
               ],
             ),
             const SizedBox(height: 16),
@@ -432,7 +474,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                     show: true,
                     drawVerticalLine: false,
                     getDrawingHorizontalLine: (val) => FlLine(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: isDark ? const Color(0xFF332924) : const Color(0xFFF2EAE5),
                       strokeWidth: 1,
                     ),
                   ),

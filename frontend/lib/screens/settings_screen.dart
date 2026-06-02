@@ -46,24 +46,28 @@ class SettingsScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 children: [
           // Pet Profile Card
-          Card(
-            elevation: 0.5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.85),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+                width: 1.5,
+              ),
+              boxShadow: [
+                if (!isDark)
+                  BoxShadow(
+                    color: const Color(0xFF35261D).withOpacity(0.04),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+              ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                    child: const Text(
-                      '🐾',
-                      style: TextStyle(fontSize: 30),
-                    ),
-                  ),
+                  const _CatAvatarWidget(),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -74,21 +78,24 @@ class SettingsScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: isDark ? Colors.white : const Color(0xFF35261D),
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
+                        Text(
                           '體重：4.8 kg | 貓咪',
-                          style: TextStyle(fontSize: 13, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 13, 
+                            color: isDark ? Colors.grey[400] : const Color(0xFF8A7566),
+                          ),
                         ),
                       ],
                     ),
                   ),
                   IconButton(
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.edit_outlined,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Color(0xFFE8875C),
                     ),
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -152,7 +159,23 @@ class SettingsScreen extends StatelessWidget {
                     context: context,
                     applicationName: '智慧成長觀測站',
                     applicationVersion: 'v1.0.0',
-                    applicationIcon: const Text('🐾', style: TextStyle(fontSize: 32)),
+                    applicationIcon: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF0DC),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color(0xFFE8875C), width: 1.5),
+                      ),
+                      child: CustomPaint(
+                        painter: _CatFacePainter(
+                          earColor: const Color(0xFFE8875C),
+                          faceColor: Colors.white,
+                          eyeColor: const Color(0xFF3A2A20),
+                          blushColor: const Color(0xFFFFD2C3),
+                        ),
+                      ),
+                    ),
                     children: const [
                       Padding(
                         padding: EdgeInsets.only(top: 12.0),
@@ -177,6 +200,8 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildSettingsGroup(BuildContext context, String groupTitle, List<Widget> tiles) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -187,21 +212,35 @@ class SettingsScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
+              color: isDark ? Colors.white70 : const Color(0xFF8A7566),
             ),
           ),
         ),
-        Card(
-          elevation: 0.5,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey.withOpacity(0.1), width: 1),
+        Container(
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.85),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+              width: 1.5,
+            ),
+            boxShadow: [
+              if (!isDark)
+                BoxShadow(
+                  color: const Color(0xFF35261D).withOpacity(0.04),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+            ],
           ),
           child: ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: tiles.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
+            separatorBuilder: (context, index) => Divider(
+              height: 1,
+              color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+            ),
             itemBuilder: (context, index) => tiles[index],
           ),
         ),
@@ -216,17 +255,30 @@ class SettingsScreen extends StatelessWidget {
     required String subtitle,
     required VoidCallback onTap,
   }) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ListTile(
-      leading: Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant),
+      leading: Icon(icon, color: const Color(0xFFE8875C)),
       title: Text(
         title,
-        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+          color: isDark ? Colors.white : const Color(0xFF3A2A20),
+        ),
       ),
       subtitle: Text(
         subtitle,
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
+        style: TextStyle(
+          fontSize: 12,
+          color: isDark ? Colors.grey[400] : const Color(0xFF8A7566),
+        ),
       ),
-      trailing: const Icon(Icons.chevron_right, size: 20),
+      trailing: Icon(
+        Icons.chevron_right,
+        size: 20,
+        color: isDark ? Colors.grey[600] : const Color(0xFFC7B1A5),
+      ),
       onTap: onTap,
     );
   }
@@ -236,4 +288,181 @@ class SettingsScreen extends StatelessWidget {
       SnackBar(content: Text('「$featureName」功能即將推出，敬請期待！')),
     );
   }
+}
+
+class _CatAvatarWidget extends StatefulWidget {
+  const _CatAvatarWidget();
+
+  @override
+  State<_CatAvatarWidget> createState() => _CatAvatarWidgetState();
+}
+
+class _CatAvatarWidgetState extends State<_CatAvatarWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 0.98, end: 1.04).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF0DC),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: const Color(0xFFE8875C),
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFE8875C).withOpacity(0.15),
+              blurRadius: 8,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: CustomPaint(
+          painter: _CatFacePainter(
+            earColor: const Color(0xFFE8875C),
+            faceColor: Colors.white,
+            eyeColor: const Color(0xFF3A2A20),
+            blushColor: const Color(0xFFFFD2C3),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CatFacePainter extends CustomPainter {
+  final Color earColor;
+  final Color faceColor;
+  final Color eyeColor;
+  final Color blushColor;
+
+  _CatFacePainter({
+    required this.earColor,
+    required this.faceColor,
+    required this.eyeColor,
+    required this.blushColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double w = size.width;
+    final double h = size.height;
+    final double cx = w / 2;
+    final double cy = h / 2;
+
+    final paint = Paint()..style = PaintingStyle.fill;
+
+    // 1. Draw Ears
+    final earPathLeft = Path()
+      ..moveTo(cx - 20, cy - 10)
+      ..lineTo(cx - 22, cy - 28)
+      ..lineTo(cx - 6, cy - 18)
+      ..close();
+    paint.color = earColor;
+    canvas.drawPath(earPathLeft, paint);
+
+    final earPathRight = Path()
+      ..moveTo(cx + 20, cy - 10)
+      ..lineTo(cx + 22, cy - 28)
+      ..lineTo(cx + 6, cy - 18)
+      ..close();
+    canvas.drawPath(earPathRight, paint);
+
+    // Inner ears
+    final innerEarLeft = Path()
+      ..moveTo(cx - 18, cy - 12)
+      ..lineTo(cx - 19, cy - 24)
+      ..lineTo(cx - 8, cy - 17)
+      ..close();
+    paint.color = blushColor;
+    canvas.drawPath(innerEarLeft, paint);
+
+    final innerEarRight = Path()
+      ..moveTo(cx + 18, cy - 12)
+      ..lineTo(cx + 19, cy - 24)
+      ..lineTo(cx + 8, cy - 17)
+      ..close();
+    canvas.drawPath(innerEarRight, paint);
+
+    // 2. Draw Face Shape
+    paint.color = faceColor;
+    canvas.drawOval(
+      Rect.fromCenter(center: Offset(cx, cy + 3), width: 44, height: 34),
+      paint,
+    );
+
+    // 3. Draw Eyes
+    paint.color = eyeColor;
+    paint.style = PaintingStyle.fill;
+    canvas.drawCircle(Offset(cx - 8, cy + 2), 2.0, paint);
+    canvas.drawCircle(Offset(cx + 8, cy + 2), 2.0, paint);
+
+    // 4. Draw Blush
+    paint.color = blushColor.withOpacity(0.7);
+    canvas.drawCircle(Offset(cx - 13, cy + 6), 3.5, paint);
+    canvas.drawCircle(Offset(cx + 13, cy + 6), 3.5, paint);
+
+    // 5. Draw Nose & Mouth
+    paint.color = earColor;
+    // Small triangle nose
+    final nosePath = Path()
+      ..moveTo(cx - 1.5, cy + 3)
+      ..lineTo(cx + 1.5, cy + 3)
+      ..lineTo(cx, cy + 4.5)
+      ..close();
+    paint.style = PaintingStyle.fill;
+    canvas.drawPath(nosePath, paint);
+
+    // Mouth line (w)
+    final mouthPaint = Paint()
+      ..color = eyeColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0
+      ..strokeCap = StrokeCap.round;
+
+    final mouthPath = Path()
+      ..moveTo(cx - 2, cy + 6)
+      ..quadraticBezierTo(cx - 1, cy + 7.5, cx, cy + 6)
+      ..quadraticBezierTo(cx + 1, cy + 7.5, cx + 2, cy + 6);
+    canvas.drawPath(mouthPath, mouthPaint);
+
+    // Whiskers
+    final whiskerPaint = Paint()
+      ..color = eyeColor.withOpacity(0.4)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8;
+    // Left whiskers
+    canvas.drawLine(Offset(cx - 18, cy + 3), Offset(Offset(cx - 18, cy + 3).dx - 5, Offset(cx - 18, cy + 3).dy - 1), whiskerPaint);
+    canvas.drawLine(Offset(cx - 18, cy + 5), Offset(Offset(cx - 18, cy + 5).dx - 5, Offset(cx - 18, cy + 5).dy + 1), whiskerPaint);
+    // Right whiskers
+    canvas.drawLine(Offset(cx + 18, cy + 3), Offset(Offset(cx + 18, cy + 3).dx + 5, Offset(cx + 18, cy + 3).dy - 1), whiskerPaint);
+    canvas.drawLine(Offset(cx + 18, cy + 5), Offset(Offset(cx + 18, cy + 5).dx + 5, Offset(cx + 18, cy + 5).dy + 1), whiskerPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

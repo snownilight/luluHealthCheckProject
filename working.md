@@ -1,11 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-030` (實作「照護時間軸」聯絡簿歷史紀錄與新增視窗風格統一)
+* **Current Active Task**: `PET-031` (實作「系統設定」頁面重構與自訂繪製貓咪大頭貼)
 * **Status**: Done
 * **Plan**:
-  - [x] 將歷史日誌列表的卡片與項目，重構為極簡時間軸風格
-  - [x] 實作左側垂直橘色圓點與虛線連接線
-  - [x] 美化「新增照護紀錄」的對話框（Dialog），使輸入框與按鈕符合 Cozy Warm Cream 的圓角溫馨風格
+  - [x] 重構設定分頁的卡片分組，採用圓角 24 像素的 Glassmorphic 白底容器與暖褐字體
+  - [x] 移除大頭貼中原有的 Emoji `🐾`
+  - [x] 使用 `CustomPainter` 自訂繪製一個溫馨可愛的貓咪大頭貼圖示，並為其加上動態微跳動效果
 
 ---
 

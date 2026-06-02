@@ -265,6 +265,8 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  _PreventativeCareCard(waterIntake: status.todayWaterIntakeMl),
                 ],
               ),
             ),
@@ -499,4 +501,102 @@ class LunaIllustrationPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _PreventativeCareCard extends StatelessWidget {
+  final double waterIntake;
+
+  const _PreventativeCareCard({required this.waterIntake});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool lowWater = waterIntake < 150;
+    final String tipTitle = lowWater ? '建議可放置「副食罐」或「肉泥」' : '今日水分攝取充足！';
+    final String tipDesc = lowWater ? '增加貓咪的被動水分攝取，目前水位偏低。' : '非常棒！繼續保持良好的飲水習慣，可適度給予主食罐獎勵。';
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF8F0),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFFFE9D6), width: 1.5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFFF0DC),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.lightbulb_outline,
+                  color: Color(0xFFD56C44),
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '防禦性照顧提醒',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF3D291E),
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    '依據今日飲水狀態推薦',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFFB08F79),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF5EC),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tipTitle,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF3D291E),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  tipDesc,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Color(0xFF7E6A5C),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

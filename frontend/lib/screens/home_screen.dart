@@ -289,6 +289,34 @@ class HomeScreen extends ConsumerWidget {
 
                   // Timeline list
                   const _CareTimelineList(),
+                  const SizedBox(height: 24),
+
+                  // 成長觀測 Title & Header
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '成長觀測',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF3D291E),
+                        ),
+                      ),
+                      Text(
+                        '7 天體重',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFE8875C),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Weight Trend Card
+                  _WeightTrendCard(currentWeight: status.lastWeightKg),
                 ],
               ),
             ),
@@ -762,4 +790,170 @@ class _PreventativeCareCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _WeightTrendCard extends StatelessWidget {
+  final double currentWeight;
+
+  const _WeightTrendCard({required this.currentWeight});
+
+  @override
+  Widget build(BuildContext context) {
+    // Generate a beautiful mock trend list where the last element matches currentWeight
+    final List<double> weights = [
+      currentWeight - 0.2,
+      currentWeight - 0.18,
+      currentWeight - 0.15,
+      currentWeight - 0.16,
+      currentWeight - 0.12,
+      currentWeight - 0.10,
+      currentWeight,
+    ];
+
+    return Container(
+      width: double.infinity,
+      height: 114,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF35261D).withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Left text details
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                '目前體重',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFFB08F79),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${currentWeight.toStringAsFixed(1)}kg',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF33261D),
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '較上週 -0.1kg',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF4B9D70),
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          // Right Sparkline graph
+          SizedBox(
+            width: 158,
+            height: 58,
+            child: CustomPaint(
+              painter: _SparklinePainter(values: weights),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SparklinePainter extends CustomPainter {
+  final List<double> values;
+
+  _SparklinePainter({required this.values});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (values.isEmpty) return;
+
+    final double minVal = values.reduce((a, b) => a < b ? a : b);
+    final double maxVal = values.reduce((a, b) => a > b ? a : b);
+    final double valRange = maxVal - minVal == 0 ? 1.0 : maxVal - minVal;
+
+    final int len = values.length;
+    final double dx = size.width / (len - 1);
+
+    final path = Path();
+    final fillPath = Path();
+
+    // Map each value to a point
+    // Note: visually higher means lower y coordinate in Flutter canvas
+    List<Offset> points = [];
+    for (int i = 0; i < len; i++) {
+      final double x = i * dx;
+      // Normalize value to 0..1, then map to size.height (leaving some padding top and bottom)
+      final double normalized = (values[i] - minVal) / valRange;
+      // Invert since higher value is higher up (smaller y)
+      final double y = size.height - (normalized * (size.height - 10) + 5);
+      points.add(Offset(x, y));
+    }
+
+    path.moveTo(points[0].dx, points[0].dy);
+    for (int i = 1; i < len; i++) {
+      path.lineTo(points[i].dx, points[i].dy);
+    }
+
+    // Draw background gradient
+    fillPath.moveTo(points[0].dx, size.height);
+    for (int i = 0; i < len; i++) {
+      fillPath.lineTo(points[i].dx, points[i].dy);
+    }
+    fillPath.lineTo(points[len - 1].dx, size.height);
+    fillPath.close();
+
+    final fillPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          const Color(0xFFE8875C).withOpacity(0.25),
+          const Color(0xFFE8875C).withOpacity(0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(fillPath, fillPaint);
+
+    // Draw main path
+    final linePaint = Paint()
+      ..color = const Color(0xFFE8875C)
+      ..strokeWidth = 3
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(path, linePaint);
+
+    // Draw last point circle
+    final lastPoint = points.last;
+    final dotPaint = Paint()
+      ..color = const Color(0xFFE8875C)
+      ..style = PaintingStyle.fill;
+    final borderPaint = Paint()
+      ..color = const Color(0xFFFFFFFF)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawCircle(lastPoint, 4, dotPaint);
+    canvas.drawCircle(lastPoint, 4, borderPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

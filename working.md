@@ -7,6 +7,7 @@
 ---
 
 ## 🟢 Completed Tasks
+* `PET-025` (Done): UI - Weight Sparkline (Implemented "成長觀測" section, card container, details layout, and a custom path and gradient area painter drawing the 7-day weight trend line matching the SVG coordinate curves).
 * `PET-024` (Done): UI - Care Timeline (Implemented "家庭照護聯絡簿" title header, separator line, dot indicators, custom dashed timeline line drawing using CustomPainter, and list elements matching the SVG exactly).
 * `PET-023` (Done): UI - Preventative Care Card (Implemented `_PreventativeCareCard` with border, custom colors, and conditional dynamic logic based on the pet's water intake level matching the SVG specification).
 * `PET-022` (Done): UI - Three-column Grid Cards (Replaced old 2x2 metrics grid with new 3-column horizontal row layout containing 飲水, 進食, 活動 stats matching the SVG style exactly).

@@ -16,9 +16,10 @@ class HomeScreen extends ConsumerWidget {
 
     // Highlight dehydration risk if water intake is low
     final bool isDehydrated = status.todayWaterIntakeMl < 50;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F0),
+      backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : const Color(0xFFFFF8F0),
       body: Stack(
         children: [
           // Top-right warm orange circle: cx=318, cy=56, r=110, fill=#FFD9A7, opacity=.56
@@ -82,7 +83,7 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Title block
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -90,16 +91,16 @@ class HomeScreen extends ConsumerWidget {
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF8B5E3C),
+                              color: isDark ? const Color(0xFFC49A7A) : const Color(0xFF8B5E3C),
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             '智慧成長觀測站',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF39291F),
+                              color: isDark ? Colors.white : const Color(0xFF39291F),
                             ),
                           ),
                         ],
@@ -273,17 +274,17 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
 
                   // 家庭照護聯絡簿 Title
-                  const Text(
+                  Text(
                     '家庭照護聯絡簿',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF3D291E),
+                      color: isDark ? Colors.white : const Color(0xFF3D291E),
                     ),
                   ),
                   const SizedBox(height: 14),
-                  const Divider(
-                    color: Color(0xFFFFE9D6),
+                  Divider(
+                    color: isDark ? Colors.white24 : const Color(0xFFFFE9D6),
                     thickness: 1,
                     height: 1,
                   ),
@@ -294,7 +295,7 @@ class HomeScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
 
                   // 成長觀測 Title & Header
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -302,7 +303,7 @@ class HomeScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF3D291E),
+                          color: isDark ? Colors.white : const Color(0xFF3D291E),
                         ),
                       ),
                       Text(
@@ -310,7 +311,7 @@ class HomeScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFFE8875C),
+                          color: isDark ? const Color(0xFFFFA27A) : const Color(0xFFE8875C),
                         ),
                       ),
                     ],

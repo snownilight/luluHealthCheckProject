@@ -7,6 +7,7 @@
 ---
 
 ## 🟢 Completed Tasks
+* `PET-027` (Done): Validation - Lint, Compile & Themes (Conducted full frontend static analysis verification with zero warnings/errors. Refactored the core title headers and background containers to dynamically adapt between Light and Dark modes based on the system theme brightness).
 * `PET-026` (Done): Integration - Riverpod & Backend (Added `getCareLogs` REST client in `ApiService`, created `careLogsProvider` Riverpod FutureProvider, and integrated `_CareTimelineList` to fetch and render care logs dynamically with fallback).
 * `PET-025` (Done): UI - Weight Sparkline (Implemented "成長觀測" section, card container, details layout, and a custom path and gradient area painter drawing the 7-day weight trend line matching the SVG coordinate curves).
 * `PET-024` (Done): UI - Care Timeline (Implemented "家庭照護聯絡簿" title header, separator line, dot indicators, custom dashed timeline line drawing using CustomPainter, and list elements matching the SVG exactly).

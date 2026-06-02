@@ -266,7 +266,29 @@ class HomeScreen extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
+                  // Preventative Care Card
                   _PreventativeCareCard(waterIntake: status.todayWaterIntakeMl),
+                  const SizedBox(height: 24),
+
+                  // 家庭照護聯絡簿 Title
+                  const Text(
+                    '家庭照護聯絡簿',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF3D291E),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const Divider(
+                    color: Color(0xFFFFE9D6),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Timeline list
+                  const _CareTimelineList(),
                 ],
               ),
             ),
@@ -497,6 +519,147 @@ class LunaIllustrationPainter extends CustomPainter {
       ..color = const Color(0xFFF2B879)
       ..style = PaintingStyle.fill;
     canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(size.width - 54, 94, 28, 11), const Radius.circular(6)), tagPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _CareTimelineList extends StatelessWidget {
+  const _CareTimelineList();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        _TimelineItem(
+          time: '07:45',
+          title: '晨間散步',
+          description: '38 分鐘，精神很好',
+        ),
+        _TimelineItem(
+          time: '09:12',
+          title: '點心時間',
+          description: '吃完了 1/2 罐凍乾貓罐頭',
+          isLast: true,
+        ),
+      ],
+    );
+  }
+}
+
+class _TimelineItem extends StatelessWidget {
+  final String time;
+  final String title;
+  final String description;
+  final bool isLast;
+
+  const _TimelineItem({
+    required this.time,
+    required this.title,
+    required this.description,
+    this.isLast = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left side: dot & dashed line
+          SizedBox(
+            width: 24,
+            child: Column(
+              children: [
+                const SizedBox(height: 6),
+                // Dot
+                Container(
+                  width: 10,
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFE8875C),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                // Dotted line
+                if (!isLast)
+                  Expanded(
+                    child: CustomPaint(
+                      size: const Size(1.5, double.infinity),
+                      painter: _DashedLinePainter(
+                        color: const Color(0xFFFFE9D6),
+                        strokeWidth: 1.5,
+                      ),
+                    ),
+                  )
+                else
+                  const Expanded(child: SizedBox()),
+              ],
+            ),
+          ),
+          const SizedBox(width: 14),
+          // Right side: title and description
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$time $title',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF3A2A20),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Color(0xFF8A7566),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DashedLinePainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+
+  _DashedLinePainter({
+    required this.color,
+    this.strokeWidth = 1.5,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const double dashHeight = 2.0;
+    const double dashGap = 2.0;
+
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    double startY = 0;
+    while (startY < size.height) {
+      canvas.drawLine(
+        Offset(size.width / 2, startY),
+        Offset(size.width / 2, startY + dashHeight),
+        paint,
+      );
+      startY += dashHeight + dashGap;
+    }
   }
 
   @override

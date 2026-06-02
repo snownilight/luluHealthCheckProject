@@ -350,7 +350,7 @@ class _StatGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 78,
+      height: 86,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -397,7 +397,7 @@ class _RealTimeStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 158,
+      height: 176,
       decoration: BoxDecoration(
         color: const Color(0xFFFFF0DC),
         borderRadius: BorderRadius.circular(28),

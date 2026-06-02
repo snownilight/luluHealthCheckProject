@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/pet_status_provider.dart';
+import '../services/api_service.dart';
+
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -553,8 +555,93 @@ class LunaIllustrationPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-class _CareTimelineList extends StatelessWidget {
+class _CareTimelineList extends ConsumerWidget {
   const _CareTimelineList();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final logsAsync = ref.watch(careLogsProvider);
+
+    return logsAsync.when(
+      data: (logs) {
+        if (logs.isEmpty) {
+          return const _DefaultCareTimeline();
+        }
+        // Show the latest 2 logs
+        final displayLogs = logs.take(2).toList();
+        return Column(
+          children: List.generate(displayLogs.length, (index) {
+            final log = displayLogs[index];
+            final type = log['eventType'] ?? 'Unknown';
+            final value = log['value'];
+            final unit = log['unit'] ?? '';
+            final note = log['note'] ?? '';
+            final timestampStr = log['eventTimestamp'] ?? '';
+            final timestamp = DateTime.tryParse(timestampStr) ?? DateTime.now();
+            final formattedTime = '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
+
+            // Translate type
+            String title = '';
+            switch (type.toString().toUpperCase()) {
+              case 'FEEDING':
+                title = '進食時間';
+                break;
+              case 'DRINKING':
+                title = '飲水時間';
+                break;
+              case 'WEIGHT':
+                title = '體重測量';
+                break;
+              case 'EXCRETION':
+                title = '排泄紀錄';
+                break;
+              case 'ACTIVITY':
+                title = '活動時間';
+                break;
+              default:
+                title = type.toString();
+            }
+
+            // Construct description
+            String description = '';
+            if (value != null) {
+              description += '$value$unit';
+            }
+            if (note.toString().isNotEmpty) {
+              if (description.isNotEmpty) {
+                description += '，';
+              }
+              description += note.toString();
+            }
+            if (description.isEmpty) {
+              description = '無備註';
+            }
+
+            return _TimelineItem(
+              time: formattedTime,
+              title: title,
+              description: description,
+              isLast: index == displayLogs.length - 1,
+            );
+          }),
+        );
+      },
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE8875C)),
+          ),
+        ),
+      ),
+      error: (err, stack) => const _DefaultCareTimeline(),
+    );
+  }
+}
+
+class _DefaultCareTimeline extends StatelessWidget {
+  const _DefaultCareTimeline();
 
   @override
   Widget build(BuildContext context) {

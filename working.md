@@ -7,6 +7,7 @@
 ---
 
 ## 🟢 Completed Tasks
+* `PET-026` (Done): Integration - Riverpod & Backend (Added `getCareLogs` REST client in `ApiService`, created `careLogsProvider` Riverpod FutureProvider, and integrated `_CareTimelineList` to fetch and render care logs dynamically with fallback).
 * `PET-025` (Done): UI - Weight Sparkline (Implemented "成長觀測" section, card container, details layout, and a custom path and gradient area painter drawing the 7-day weight trend line matching the SVG coordinate curves).
 * `PET-024` (Done): UI - Care Timeline (Implemented "家庭照護聯絡簿" title header, separator line, dot indicators, custom dashed timeline line drawing using CustomPainter, and list elements matching the SVG exactly).
 * `PET-023` (Done): UI - Preventative Care Card (Implemented `_PreventativeCareCard` with border, custom colors, and conditional dynamic logic based on the pet's water intake level matching the SVG specification).

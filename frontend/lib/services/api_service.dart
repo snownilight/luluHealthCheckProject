@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final apiServiceProvider = Provider((ref) => ApiService(baseUrl: 'http://10.0.2.2:8080')); // 10.0.2.2 maps to localhost from Android emulator, fallback http://localhost:8080 for web/desktop
+final apiServiceProvider = Provider((ref) => ApiService(
+  baseUrl: kIsWeb ? 'http://localhost:8080' : 'http://10.0.2.2:8080',
+));
 
 class ApiService {
   final String baseUrl;
@@ -54,4 +57,31 @@ class ApiService {
     } catch (_) {}
     return [];
   }
+
+  // Fetch care logs
+  Future<List<Map<String, dynamic>>> getCareLogs() async {
+    try {
+      final url = Uri.parse('$baseUrl/api/v1/care-logs');
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (body['data'] is List) {
+          return List<Map<String, dynamic>>.from(body['data']);
+        }
+      }
+    } catch (_) {}
+    return [];
+  }
 }
+
+final careLogsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+  final apiService = ref.watch(apiServiceProvider);
+  final logs = await apiService.getCareLogs();
+  // Sort descending by eventTimestamp
+  logs.sort((a, b) {
+    final aTime = DateTime.tryParse(a['eventTimestamp'] ?? '') ?? DateTime.now();
+    final bTime = DateTime.tryParse(b['eventTimestamp'] ?? '') ?? DateTime.now();
+    return bTime.compareTo(aTime);
+  });
+  return logs;
+});

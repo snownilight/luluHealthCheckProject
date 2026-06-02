@@ -80,49 +80,125 @@ class HomeScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Hello Header Card
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context).colorScheme.secondary,
+                  // Greeting & Header Row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Title block
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '早安，Luna 的家人',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF8B5E3C),
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '智慧成長觀測站',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF39291F),
+                            ),
+                          ),
                         ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '早安，O-Lulu 的家人! 🐾',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                      // Notification & Profile block
+                      Row(
+                        children: [
+                          // Notification Box
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.94),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                // Styled mail/notification box
+                                Container(
+                                  width: 12,
+                                  height: 15,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFE9865B),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                ),
+                                // Red dot
+                                Positioned(
+                                  top: 10,
+                                  right: 12,
+                                  child: Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFF45C50),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          '即時追蹤與觀測 O-Lulu 的健康狀態。',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70,
+                          const SizedBox(width: 8),
+                          // Avatar Container
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFBFEAD8),
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipOval(
+                              child: Stack(
+                                children: [
+                                  // Face: r=9 (diameter=18). Center x=21, y=18.
+                                  Positioned(
+                                    top: 9,
+                                    left: 12,
+                                    child: Container(
+                                      width: 18,
+                                      height: 18,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFFFE0C2),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  ),
+                                  // Body/Collar: width=24, height=12. Center x=21, y=31.
+                                  Positioned(
+                                    top: 31,
+                                    left: 9,
+                                    child: Container(
+                                      width: 24,
+                                      height: 12,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF6DAA91),
+                                        borderRadius: BorderRadius.circular(9),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 24),
 

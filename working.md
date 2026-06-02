@@ -7,6 +7,7 @@
 ---
 
 ## 🟢 Completed Tasks
+* `PET-020` (Done): UI - Greeting & Header Bar (Greeting "早安，Luna 的家人", title "智慧成長觀測站", and right-side translucent notification and custom profile avatar icons matching the SVG layout).
 * `PET-019` (Done): UI - Background & Decorative Circles (Cozy Warm Cream background with top-right, center-left, and bottom-right decorative colored circles).
 * `PET-017` (Done): End-to-End Simulation Tests.
 * `PET-018` (Done): Final UI Polish & Transitions.

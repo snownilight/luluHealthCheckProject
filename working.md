@@ -1,8 +1,12 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: None (Waiting for Assignment)
-* **Status**: Idle
+* **Current Active Task**: `PET-028` (實作跨頁面方案 B 自訂背景裝飾圓圈與主導覽列美化)
+* **Status**: Done
 * **Plan**:
+  - [x] 重構 `main_layout.dart` 的底部導覽列（BottomNavigationBar），使其呈現浮動圓角卡片與陰影效果
+  - [x] 在 `trends_screen.dart` 中新增方案 B 專屬分頁裝飾圓圈與 Cozy Warm Cream 背景色
+  - [x] 在 `timeline_screen.dart` 中新增方案 B 專屬分頁裝飾圓圈與 Cozy Warm Cream 背景色
+  - [x] 在 `settings_screen.dart` 中新增方案 B 專屬分頁裝飾圓圈與 Cozy Warm Cream 背景色
 
 ---
 

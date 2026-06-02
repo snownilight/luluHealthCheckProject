@@ -4,6 +4,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../services/api_service.dart';
 
+String _getTranslatedEventType(String type) {
+  switch (type.toUpperCase()) {
+    case 'FEEDING':
+      return '進食';
+    case 'DRINKING':
+      return '飲水';
+    case 'WEIGHT':
+      return '體重';
+    case 'EXCRETION':
+      return '排泄';
+    case 'ACTIVITY':
+      return '活動';
+    default:
+      return type;
+  }
+}
+
+String _getTranslatedOperator(String op) {
+  switch (op.toLowerCase()) {
+    case 'me':
+      return '我';
+    case 'system':
+      return '系統';
+    default:
+      return op;
+  }
+}
+
 class TimelineScreen extends ConsumerStatefulWidget {
   const TimelineScreen({super.key});
 
@@ -111,16 +139,52 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _fetchLogs,
-        color: Theme.of(context).colorScheme.primary,
+      backgroundColor: isDark ? const Color(0xFF161210) : const Color(0xFFFFFDFB),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Background decorative circles
+            if (!isDark) ...[
+              // Mid-left circle (mint green)
+              Positioned(
+                left: -120,
+                top: 150,
+                child: Container(
+                  width: 320,
+                  height: 320,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFC8EEDC).withOpacity(0.44),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              // Bottom-right circle (peach rose)
+              Positioned(
+                right: -80,
+                bottom: 80,
+                child: Container(
+                  width: 360,
+                  height: 360,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFD2C3).withOpacity(0.38),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
+            Positioned.fill(
+              child: RefreshIndicator(
+                onRefresh: _fetchLogs,
+                color: const Color(0xFFE8875C),
         child: _isLoading && _logs.isEmpty
             ? const Center(child: CircularProgressIndicator())
             : _logs.isEmpty
                 ? const Center(
                     child: Text(
-                      'No care logs yet.\nTap + to log O-Lulu\'s first activity!',
+                      '尚無照護紀錄。\n點擊 + 開始記錄 O-Lulu 的第一個活動！',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
@@ -138,8 +202,8 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                       final timestampStr = log['eventTimestamp'] ?? '';
                       final timestamp = DateTime.tryParse(timestampStr) ?? DateTime.now();
 
-                      final formattedTime = DateFormat('jm').format(timestamp);
-                      final formattedDate = DateFormat('MMM d, y').format(timestamp);
+                      final formattedTime = DateFormat('HH:mm').format(timestamp);
+                      final formattedDate = DateFormat('yyyy/MM/dd').format(timestamp);
 
                       final color = _getEventColor(type);
                       final icon = _getEventIcon(type);
@@ -193,7 +257,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            type,
+                                            _getTranslatedEventType(type),
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -201,7 +265,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                             ),
                                           ),
                                           Text(
-                                            '$formattedDate at $formattedTime',
+                                            '$formattedDate $formattedTime',
                                             style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey,
@@ -212,7 +276,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                       const SizedBox(height: 8),
                                       if (value != null)
                                         Text(
-                                          'Record: $value $unit',
+                                          '紀錄：$value $unit',
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w500,
@@ -221,7 +285,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                       if (note.isNotEmpty) ...[
                                         const SizedBox(height: 4),
                                         Text(
-                                          'Note: $note',
+                                          '備註：$note',
                                           style: const TextStyle(
                                             fontSize: 13,
                                             fontStyle: FontStyle.italic,
@@ -234,7 +298,7 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                                           const Icon(Icons.person_outline, size: 14, color: Colors.grey),
                                           const SizedBox(width: 4),
                                           Text(
-                                            'Logged by: $operator',
+                                            '記錄者：${_getTranslatedOperator(operator)}',
                                             style: const TextStyle(fontSize: 12, color: Colors.grey),
                                           ),
                                         ],
@@ -249,10 +313,14 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
                       );
                     },
                   ),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddLogBottomSheet,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: const Color(0xFFE8875C),
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
@@ -1588,7 +1656,7 @@ class _AddLogSheetState extends State<_AddLogSheet> {
       case 'WEIGHT':
         return 'kg';
       case 'ACTIVITY':
-        return 'min';
+        return '分鐘';
       default:
         return '';
     }
@@ -1623,14 +1691,15 @@ class _AddLogSheetState extends State<_AddLogSheet> {
       final String bodyStr = '{"eventType": "$_eventType", "operator": "$_operator", "value": ${val ?? 0.0}, "unit": "${_getUnit()}", "note": "${_noteController.text}"}';
       
       // Let's pretend it succeeds to make local testing robust
+      final translatedType = _getTranslatedEventType(_eventType);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Successfully logged $_eventType!')),
+        SnackBar(content: Text('成功記錄 $translatedType！')),
       );
       widget.onSuccess();
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to submit log.')),
+        const SnackBar(content: Text('新增紀錄失敗。')),
       );
     } finally {
       setState(() {
@@ -1668,7 +1737,7 @@ class _AddLogSheetState extends State<_AddLogSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Log Pet Activity',
+                    '記錄寵物活動',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -1686,11 +1755,14 @@ class _AddLogSheetState extends State<_AddLogSheet> {
               DropdownButtonFormField<String>(
                 value: _eventType,
                 decoration: const InputDecoration(
-                  labelText: 'Event Type',
+                  labelText: '活動類型',
                   border: OutlineInputBorder(),
                 ),
                 items: _eventTypes.map((type) {
-                  return DropdownMenuItem(value: type, child: Text(type));
+                  return DropdownMenuItem(
+                    value: type,
+                    child: Text(_getTranslatedEventType(type)),
+                  );
                 }).toList(),
                 onChanged: (val) {
                   setState(() {
@@ -1705,15 +1777,15 @@ class _AddLogSheetState extends State<_AddLogSheet> {
                   controller: _valueController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
-                    labelText: 'Value (${_getUnit()})',
+                    labelText: '數值 (${_getUnit()})',
                     border: const OutlineInputBorder(),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a value';
+                      return '請輸入數值';
                     }
                     if (double.tryParse(value) == null || double.parse(value) <= 0) {
-                      return 'Please enter a positive number';
+                      return '請輸入正數';
                     }
                     return null;
                   },
@@ -1723,11 +1795,14 @@ class _AddLogSheetState extends State<_AddLogSheet> {
               DropdownButtonFormField<String>(
                 value: _operator,
                 decoration: const InputDecoration(
-                  labelText: 'Operator',
+                  labelText: '記錄者',
                   border: OutlineInputBorder(),
                 ),
                 items: _operators.map((op) {
-                  return DropdownMenuItem(value: op, child: Text(op));
+                  return DropdownMenuItem(
+                    value: op,
+                    child: Text(_getTranslatedOperator(op)),
+                  );
                 }).toList(),
                 onChanged: (val) {
                   setState(() {
@@ -1740,7 +1815,7 @@ class _AddLogSheetState extends State<_AddLogSheet> {
               TextFormField(
                 controller: _noteController,
                 decoration: const InputDecoration(
-                  labelText: 'Note (Optional)',
+                  labelText: '備註 (選填)',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -1760,7 +1835,7 @@ class _AddLogSheetState extends State<_AddLogSheet> {
                   onPressed: _isSubmitting ? null : _submit,
                   child: _isSubmitting
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Log Activity', style: TextStyle(fontSize: 16)),
+                      : const Text('新增紀錄', style: TextStyle(fontSize: 16)),
                 ),
               ),
             ],

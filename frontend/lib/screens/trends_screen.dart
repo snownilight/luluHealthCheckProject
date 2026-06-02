@@ -127,24 +127,60 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
         ? sortedSummaryList.sublist(sortedSummaryList.length - 7)
         : sortedSummaryList;
 
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _fetchTrendData,
-        color: Theme.of(context).colorScheme.primary,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      backgroundColor: isDark ? const Color(0xFF161210) : const Color(0xFFFFFDFB),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Background decorative circles
+            if (!isDark) ...[
+              // Top-left circle (peach)
+              Positioned(
+                left: -60,
+                top: -60,
+                child: Container(
+                  width: 240,
+                  height: 240,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFD9A7).withOpacity(0.48),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              // Mid-right circle (mint)
+              Positioned(
+                right: -100,
+                top: 250,
+                child: Container(
+                  width: 380,
+                  height: 380,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFC8EEDC).withOpacity(0.42),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
+            Positioned.fill(
+              child: RefreshIndicator(
+                onRefresh: _fetchTrendData,
+                color: const Color(0xFFE8875C),
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header
               const Text(
-                'Weekly Growth Curve',
+                '每週成長曲線',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               const Text(
-                'Monitor O-Lulu\'s weight trends and growth metrics.',
+                '觀測 O-Lulu 的體重變化趨勢與成長指標。',
                 style: TextStyle(fontSize: 13, color: Colors.grey),
               ),
               const SizedBox(height: 16),
@@ -156,12 +192,12 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
 
               // Daily Nutrient Intake Header
               const Text(
-                'Nutrient Intake History',
+                '每日營養攝取紀錄',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
               const Text(
-                'Daily comparison of food (g) vs water (ml) consumed.',
+                '每日進食量 (g) 與飲水量 (ml) 的對比圖。',
                 style: TextStyle(fontSize: 13, color: Colors.grey),
               ),
               const SizedBox(height: 16),
@@ -174,7 +210,11 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
           ),
         ),
       ),
-    );
+    ),
+  ],
+),
+),
+);
   }
 
   // Weight Trend Line Chart
@@ -183,7 +223,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
       return const Card(
         child: Padding(
           padding: EdgeInsets.all(24),
-          child: Center(child: Text('No weight trend data available.')),
+          child: Center(child: Text('暫無體重趨勢數據。')),
         ),
       );
     }
@@ -218,7 +258,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                       '${data.last['weightKg'].toStringAsFixed(2)} kg',
                       style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
-                    const Text('Current Weight', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    const Text('目前體重', style: TextStyle(fontSize: 12, color: Colors.grey)),
                   ],
                 ),
                 Container(
@@ -228,7 +268,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(
-                    'Growth Curve',
+                    '成長曲線',
                     style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold, fontSize: 11),
                   ),
                 ),
@@ -330,7 +370,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
       return const Card(
         child: Padding(
           padding: EdgeInsets.all(24),
-          child: Center(child: Text('No daily summary trend data available.')),
+          child: Center(child: Text('暫無每日營養攝取數據。')),
         ),
       );
     }
@@ -376,9 +416,9 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                _buildLegendItem('Food (g)', Colors.orangeAccent),
+                _buildLegendItem('進食 (g)', Colors.orangeAccent),
                 const SizedBox(width: 16),
-                _buildLegendItem('Water (ml)', Colors.blueAccent),
+                _buildLegendItem('飲水 (ml)', Colors.blueAccent),
               ],
             ),
             const SizedBox(height: 16),
@@ -422,7 +462,7 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
                             return Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
-                                DateFormat('E').format(parsedDate),
+                                '週${['一', '二', '三', '四', '五', '六', '日'][parsedDate.weekday - 1]}',
                                 style: const TextStyle(color: Colors.grey, fontSize: 10),
                               ),
                             );

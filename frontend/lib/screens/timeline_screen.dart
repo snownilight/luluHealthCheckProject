@@ -114,15 +114,15 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
   Color _getEventColor(String type) {
     switch (type.toUpperCase()) {
       case 'FEEDING':
-        return Colors.orangeAccent;
+        return const Color(0xFFC97922);
       case 'DRINKING':
-        return Colors.blueAccent;
+        return const Color(0xFF3E91B8);
       case 'WEIGHT':
-        return Colors.teal;
+        return const Color(0xFFE8875C);
       case 'EXCRETION':
-        return Colors.brown;
+        return const Color(0xFF8A7566);
       case 'ACTIVITY':
-        return Colors.green;
+        return const Color(0xFF39845C);
       default:
         return Colors.grey;
     }
@@ -210,101 +210,126 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
 
                       return IntrinsicHeight(
                         child: Row(
-                          crossAxisAlignment: crossAxisAlignment(index),
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             // Timeline Axis
-                            Column(
-                              children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: color.withOpacity(0.15),
-                                    shape: BoxShape.circle,
-                                    border: Border.all(color: color, width: 2),
+                            SizedBox(
+                              width: 40,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: color.withOpacity(0.12),
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: color, width: 2),
+                                    ),
+                                    child: Icon(icon, color: color, size: 16),
                                   ),
-                                  child: Icon(icon, color: color, size: 20),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    width: 2,
-                                    color: index == _logs.length - 1
-                                        ? Colors.transparent
-                                        : Colors.grey.withOpacity(0.3),
-                                  ),
-                                ),
-                              ],
+                                  if (index != _logs.length - 1)
+                                    Expanded(
+                                      child: CustomPaint(
+                                        size: const Size(2, double.infinity),
+                                        painter: _DashedLinePainter(
+                                          color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFFFD5C6),
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    const Expanded(child: SizedBox()),
+                                ],
+                              ),
                             ),
                             const SizedBox(width: 16),
                             // Event Card
                             Expanded(
-                              child: Card(
-                                elevation: 0.5,
+                              child: Container(
                                 margin: const EdgeInsets.only(bottom: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  side: BorderSide(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    width: 1,
+                                decoration: BoxDecoration(
+                                  color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.85),
+                                  borderRadius: BorderRadius.circular(24),
+                                  border: Border.all(
+                                    color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+                                    width: 1.5,
                                   ),
+                                  boxShadow: [
+                                    if (!isDark)
+                                      BoxShadow(
+                                        color: const Color(0xFF35261D).withOpacity(0.04),
+                                        blurRadius: 16,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                  ],
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
+                                padding: const EdgeInsets.all(18),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                          decoration: BoxDecoration(
+                                            color: color.withOpacity(0.12),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
                                             _getTranslatedEventType(type),
                                             style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                               color: color,
                                             ),
                                           ),
-                                          Text(
-                                            '$formattedDate $formattedTime',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      if (value != null)
-                                        Text(
-                                          '紀錄：$value $unit',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
                                         ),
-                                      if (note.isNotEmpty) ...[
-                                        const SizedBox(height: 4),
                                         Text(
-                                          '備註：$note',
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            fontStyle: FontStyle.italic,
+                                          '$formattedDate $formattedTime',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: isDark ? Colors.grey[400] : const Color(0xFF8A7566),
                                           ),
                                         ),
                                       ],
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.person_outline, size: 14, color: Colors.grey),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            '記錄者：${_getTranslatedOperator(operator)}',
-                                            style: const TextStyle(fontSize: 12, color: Colors.grey),
-                                          ),
-                                        ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    if (value != null)
+                                      Text(
+                                        '紀錄：$value $unit',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: isDark ? Colors.white : const Color(0xFF35261D),
+                                        ),
+                                      ),
+                                    if (note.isNotEmpty) ...[
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        '備註：$note',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontStyle: FontStyle.italic,
+                                          color: isDark ? Colors.grey[350] : const Color(0xFF5A4B41),
+                                        ),
                                       ),
                                     ],
-                                  ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.person_outline, size: 14, color: isDark ? Colors.grey[400] : const Color(0xFF8A7566)),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '記錄者：${_getTranslatedOperator(operator)}',
+                                          style: TextStyle(
+                                            fontSize: 12, 
+                                            color: isDark ? Colors.grey[400] : const Color(0xFF8A7566),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -1710,20 +1735,56 @@ class _AddLogSheetState extends State<_AddLogSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    InputDecoration buildInputDecoration(String labelText) {
+      return InputDecoration(
+        labelText: labelText,
+        labelStyle: TextStyle(
+          color: isDark ? Colors.grey[400] : const Color(0xFF8A7566),
+          fontSize: 14,
+        ),
+        filled: true,
+        fillColor: isDark ? const Color(0xFF1E1614) : const Color(0xFFFAF6F2),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xFFE8875C), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      );
+    }
 
     return Container(
       padding: EdgeInsets.only(
-        top: 24,
+        top: 28,
         left: 24,
         right: 24,
         bottom: 24 + bottomInset,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 10, spreadRadius: 5),
+        color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.95),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        border: Border(
+          top: BorderSide(
+            color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
+            width: 1.5,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF35261D).withOpacity(0.08),
+            blurRadius: 20,
+            spreadRadius: 1,
+          ),
         ],
       ),
       child: Form(
@@ -1737,27 +1798,30 @@ class _AddLogSheetState extends State<_AddLogSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '記錄寵物活動',
+                    '記錄照護時間軸',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: isDark ? Colors.white : const Color(0xFF3A2A20),
                     ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
+                    color: isDark ? Colors.white70 : const Color(0xFF8A7566),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               // Event Type Dropdown
               DropdownButtonFormField<String>(
                 value: _eventType,
-                decoration: const InputDecoration(
-                  labelText: '活動類型',
-                  border: OutlineInputBorder(),
+                dropdownColor: isDark ? const Color(0xFF261D1A) : Colors.white,
+                style: TextStyle(
+                  color: isDark ? Colors.white : const Color(0xFF3A2A20),
+                  fontSize: 15,
                 ),
+                decoration: buildInputDecoration('活動類型'),
                 items: _eventTypes.map((type) {
                   return DropdownMenuItem(
                     value: type,
@@ -1772,14 +1836,12 @@ class _AddLogSheetState extends State<_AddLogSheet> {
               ),
               const SizedBox(height: 16),
               // Value input (only numeric for types requiring it)
-              if (_eventType != 'EXCRETION')
+              if (_eventType != 'EXCRETION') ...[
                 TextFormField(
                   controller: _valueController,
+                  style: TextStyle(color: isDark ? Colors.white : const Color(0xFF3A2A20)),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: '數值 (${_getUnit()})',
-                    border: const OutlineInputBorder(),
-                  ),
+                  decoration: buildInputDecoration('數值 (${_getUnit()})'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return '請輸入數值';
@@ -1790,14 +1852,17 @@ class _AddLogSheetState extends State<_AddLogSheet> {
                     return null;
                   },
                 ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
+              ],
               // Operator Dropdown
               DropdownButtonFormField<String>(
                 value: _operator,
-                decoration: const InputDecoration(
-                  labelText: '記錄者',
-                  border: OutlineInputBorder(),
+                dropdownColor: isDark ? const Color(0xFF261D1A) : Colors.white,
+                style: TextStyle(
+                  color: isDark ? Colors.white : const Color(0xFF3A2A20),
+                  fontSize: 15,
                 ),
+                decoration: buildInputDecoration('記錄者'),
                 items: _operators.map((op) {
                   return DropdownMenuItem(
                     value: op,
@@ -1814,28 +1879,27 @@ class _AddLogSheetState extends State<_AddLogSheet> {
               // Note field
               TextFormField(
                 controller: _noteController,
-                decoration: const InputDecoration(
-                  labelText: '備註 (選填)',
-                  border: OutlineInputBorder(),
-                ),
+                style: TextStyle(color: isDark ? Colors.white : const Color(0xFF3A2A20)),
+                decoration: buildInputDecoration('備註 (選填)'),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               // Submit button
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 54,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: const Color(0xFFE8875C),
                     foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(18),
                     ),
                   ),
                   onPressed: _isSubmitting ? null : _submit,
                   child: _isSubmitting
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('新增紀錄', style: TextStyle(fontSize: 16)),
+                      : const Text('新增紀錄', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -1844,4 +1908,38 @@ class _AddLogSheetState extends State<_AddLogSheet> {
       ),
     );
   }
+}
+
+class _DashedLinePainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+
+  _DashedLinePainter({
+    required this.color,
+    this.strokeWidth = 1.5,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const double dashHeight = 4.0;
+    const double dashGap = 3.0;
+
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke;
+
+    double startY = 0;
+    while (startY < size.height) {
+      canvas.drawLine(
+        Offset(size.width / 2, startY),
+        Offset(size.width / 2, startY + dashHeight),
+        paint,
+      );
+      startY += dashHeight + dashGap;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

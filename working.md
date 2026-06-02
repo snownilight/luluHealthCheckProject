@@ -1,12 +1,11 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-029` (實作「成長觀測」趨勢圖表頁面風格重構)
+* **Current Active Task**: `PET-030` (實作「照護時間軸」聯絡簿歷史紀錄與新增視窗風格統一)
 * **Status**: Done
 * **Plan**:
-  - [x] 重構體重折線圖卡片，採用圓角 24 像素的白底 Glassmorphic 卡片
-  - [x] 調整 `fl_chart` 的折線色彩為珊瑚橘（`#E8875C`）與半透明漸層填充
-  - [x] 重構進食/飲水每日直條圖卡片，採用圓角 24 像素的 Glassmorphic 樣式
-  - [x] 調整直條圖的色彩配色為飲水藍（`#3E91B8`）與進食暖金（`#C97922`）
+  - [x] 將歷史日誌列表的卡片與項目，重構為極簡時間軸風格
+  - [x] 實作左側垂直橘色圓點與虛線連接線
+  - [x] 美化「新增照護紀錄」的對話框（Dialog），使輸入框與按鈕符合 Cozy Warm Cream 的圓角溫馨風格
 
 ---
 

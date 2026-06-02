@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import '../services/pet_status_provider.dart';
-import '../widgets/glass_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -13,10 +11,6 @@ class HomeScreen extends ConsumerWidget {
     final status = ref.watch(petStatusProvider);
     // Triggers auto-connection of the WebSocket service
     ref.watch(webSocketServiceProvider);
-
-    final String activeTimeStr = status.lastActiveTime != null
-        ? DateFormat('HH:mm').format(status.lastActiveTime!)
-        : '無紀錄';
 
     // Highlight dehydration risk if water intake is low
     final bool isDehydrated = status.todayWaterIntakeMl < 50;
@@ -234,61 +228,40 @@ class HomeScreen extends ConsumerWidget {
                   const _RealTimeStatusCard(),
                   const SizedBox(height: 24),
 
-                  // Section Title
-                  const Text(
-                    '詳細數據指標',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF35261D),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Metrics Grid
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 0.9,
+                  // 3-Column Stats Row
+                  Row(
                     children: [
-                      // Water Intake Card
-                      _MetricCard(
-                        title: '今日飲水',
-                        value: '${status.todayWaterIntakeMl.toStringAsFixed(0)} ml',
-                        subtitle: '目標：300 ml',
-                        icon: Icons.local_drink,
-                        color: Colors.blueAccent,
-                        progress: (status.todayWaterIntakeMl / 300).clamp(0.0, 1.0),
+                      Expanded(
+                        child: _StatGridCard(
+                          title: '飲水',
+                          value: '${status.todayWaterIntakeMl.toStringAsFixed(0)}ml',
+                          status: status.todayWaterIntakeMl >= 150 ? '安全' : '偏低',
+                          backgroundColor: const Color(0xFFDDF4FF),
+                          titleColor: const Color(0xFF3E91B8),
+                          statusColor: const Color(0xFF7B6759),
+                        ),
                       ),
-                      // Food Intake Card
-                      _MetricCard(
-                        title: '今日進食',
-                        value: '${status.todayFoodIntakeG.toStringAsFixed(0)} g',
-                        subtitle: '目標：200 g',
-                        icon: Icons.restaurant,
-                        color: Colors.orangeAccent,
-                        progress: (status.todayFoodIntakeG / 200).clamp(0.0, 1.0),
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: _StatGridCard(
+                          title: '進食',
+                          value: '${(status.todayFoodIntakeG / 200 * 100).toStringAsFixed(0)}%',
+                          status: '正常',
+                          backgroundColor: const Color(0xFFFFF0D7),
+                          titleColor: const Color(0xFFC97922),
+                          statusColor: const Color(0xFF7B6759),
+                        ),
                       ),
-                      // Weight Card
-                      _MetricCard(
-                        title: '目前體重',
-                        value: '${status.lastWeightKg.toStringAsFixed(1)} kg',
-                        subtitle: '正常範圍：4-5 kg',
-                        icon: Icons.scale,
-                        color: Colors.teal,
-                        progress: (status.lastWeightKg / 5.0).clamp(0.0, 1.0),
-                      ),
-                      // Last Active Card
-                      _MetricCard(
-                        title: '最後活動',
-                        value: activeTimeStr,
-                        subtitle: '狀態：良好',
-                        icon: Icons.pets,
-                        color: Colors.green,
-                        progress: 1.0,
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: const _StatGridCard(
+                          title: '活動',
+                          value: '38分',
+                          status: '活躍',
+                          backgroundColor: Color(0xFFE6F7EA),
+                          titleColor: Color(0xFF39845C),
+                          statusColor: Color(0xFF7B6759),
+                        ),
                       ),
                     ],
                   ),
@@ -302,89 +275,62 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-// Custom widget representing a metric card
-class _MetricCard extends StatelessWidget {
+class _StatGridCard extends StatelessWidget {
   final String title;
   final String value;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-  final double progress;
+  final String status;
+  final Color backgroundColor;
+  final Color titleColor;
+  final Color statusColor;
 
-  const _MetricCard({
+  const _StatGridCard({
     required this.title,
     required this.value,
-    required this.subtitle,
-    required this.icon,
-    required this.color,
-    required this.progress,
+    required this.status,
+    required this.backgroundColor,
+    required this.titleColor,
+    required this.statusColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
-      padding: const EdgeInsets.all(16),
+    return Container(
+      height: 78,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(icon, color: color, size: 20),
-                ),
-                Text(
-                  '${(progress * 100).toStringAsFixed(0)}%',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-              ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: titleColor,
             ),
-            const Spacer(),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF33261D),
             ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+          ),
+          Text(
+            status,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: statusColor,
             ),
-            const SizedBox(height: 2),
-            Text(
-              subtitle,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Linear Progress Indicator
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: progress,
-                backgroundColor: color.withOpacity(0.1),
-                valueColor: AlwaysStoppedAnimation<Color>(color),
-                minHeight: 5,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 }

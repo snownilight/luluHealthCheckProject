@@ -7,6 +7,7 @@
 ---
 
 ## 🟢 Completed Tasks
+* `PET-022` (Done): UI - Three-column Grid Cards (Replaced old 2x2 metrics grid with new 3-column horizontal row layout containing 飲水, 進食, 活動 stats matching the SVG style exactly).
 * `PET-021` (Done): UI - Real-time Status Card & Custom Cat Painter (Rounded corner `#FFF0DC` card containing "Luna 今天很穩定" text status, "剛剛同步" badge, and a custom cat face illustration using CustomPainter).
 * `PET-020` (Done): UI - Greeting & Header Bar (Greeting "早安，Luna 的家人", title "智慧成長觀測站", and right-side translucent notification and custom profile avatar icons matching the SVG layout).
 * `PET-019` (Done): UI - Background & Decorative Circles (Cozy Warm Cream background with top-right, center-left, and bottom-right decorative colored circles).

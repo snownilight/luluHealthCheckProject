@@ -1,11 +1,12 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-031` (實作「系統設定」頁面重構與自訂繪製貓咪大頭貼)
-* **Status**: Done
+* **Current Active Task**: `PET-032` (跨分頁整合編譯與亮/暗模式視覺驗證)
+* **Status**: In Progress
 * **Plan**:
-  - [x] 重構設定分頁的卡片分組，採用圓角 24 像素的 Glassmorphic 白底容器與暖褐字體
-  - [x] 移除大頭貼中原有的 Emoji `🐾`
-  - [x] 使用 `CustomPainter` 自訂繪製一個溫馨可愛的貓咪大頭貼圖示，並為其加上動態微跳動效果
+  - [ ] 執行全域的 `flutter analyze` 靜態編譯語法檢查，修復所有潛在警告
+  - [ ] 在前端應用程式運行狀態下，透過自動化瀏覽器測試，開啟亮色/暗色主題模式
+  - [ ] 對所有 4 個主要分頁（首頁、成長觀測、照護時間軸、系統設定）進行視覺驗證
+  - [ ] 擷取這 4 個頁面的主題對比螢幕截圖，並將成果寫入 walkthrough.md 以呈現
 
 ---
 

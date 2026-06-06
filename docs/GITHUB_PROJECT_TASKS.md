@@ -156,21 +156,21 @@ This document lists all development tasks organized by Phase, mapping directly t
 ### 🟢 `PET-034`: Configure Drift/SQLite & Google OAuth dependencies and define PetRepository
 *   **Description**: Add dependencies to `pubspec.yaml` and define `PetRepository` abstract class.
 *   **Checklist**:
-    - [ ] Add `drift`, `google_sign_in`, and `googleapis` packages
-    - [ ] Define abstract `PetRepository` class interface
+    - [x] Add `drift`, `google_sign_in`, and `googleapis` packages
+    - [x] Define abstract `PetRepository` class interface
 
 ### 🟢 `PET-035`: Implement Local SQLite Database & LocalPetRepository (Drift)
 *   **Description**: Write Drift schema definitions for offline storage and implement `LocalPetRepository`.
 *   **Checklist**:
-    - [ ] Create Drift table schemas
-    - [ ] Implement local CRUD operations matching repository interface
+    - [x] Create Drift table schemas
+    - [x] Implement local CRUD operations matching repository interface
 
 ### 🟢 `PET-036`: Configure Google Sign-In, Google Sheets API & Write Permission check
 *   **Description**: Implement Google login flow, Google Sheets data mapping, and validation of Editor write permission during linking.
 *   **Checklist**:
-    - [ ] Integrate Google Sign-in flow and retrieve API token
-    - [ ] Implement GoogleSheetsPetRepository CRUD methods
-    - [ ] Implement write-permission dry-run validation for option 3
+    - [x] Integrate Google Sign-in flow and retrieve API token
+    - [x] Implement GoogleSheetsPetRepository CRUD methods
+    - [x] Implement write-permission dry-run validation for option 3
 
 ### 🟢 `PET-037`: Implement Database Selection Onboarding Screen (storage_setup_screen.dart)
 *   **Description**: Build a clean onboarding screen with three options: Local, Create New Sheet, Link Existing Sheet.

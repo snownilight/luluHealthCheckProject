@@ -1,16 +1,21 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `PET-032` (跨分頁整合編譯與亮/暗模式視覺驗證)
-* **Status**: In Progress
+* **Current Active Task**: `None` (Waiting for next task assignment: `PET-037` / `PET-038`)
+* **Status**: Idle
 * **Plan**:
-  - [ ] 執行全域的 `flutter analyze` 靜態編譯語法檢查，修復所有潛在警告
-  - [ ] 在前端應用程式運行狀態下，透過自動化瀏覽器測試，開啟亮色/暗色主題模式
-  - [ ] 對所有 4 個主要分頁（首頁、成長觀測、照護時間軸、系統設定）進行視覺驗證
-  - [ ] 擷取這 4 個頁面的主題對比螢幕截圖，並將成果寫入 walkthrough.md 以呈現
+  - [ ] 等待使用者分配任務，後續將為設定頁面與 Onboarding 儲存引導畫面進行開發
 
 ---
 
 ## 🟢 Completed Tasks
+* `PET-036` (Done): Cloud Sync - Google Sheets Integration (Implemented Google OAuth flow, sheets initialization for CareLogs/WeightLogs/DailySummaries, and Google Drive API write capability check using `capabilities/canEdit`).
+* `PET-035` (Done): Storage - SQLite Database & LocalPetRepository (Implemented local tables schema using Drift, ran build_runner generator, and implemented full offline CRUD & daily summary aggregation logic).
+* `PET-034` (Done): Architecture - PetRepository abstraction (Configured dependencies for Drift, sqlite3, google_sign_in, googleapis, and defined the `PetRepository` abstract class).
+* `PET-043` (Done): Backend - Scheduled Dehydration Alerts (Implemented database-driven dehydration alert check using Spring `@Scheduled` scheduler, replacing Redis expiration listener).
+* `PET-042` (Done): Backend - Synchronous Operations (Refactored REST controller to save logs synchronously to MariaDB and aggregate pet status dynamically using MyBatis XML mappers, removing Redis caching).
+* `PET-041` (Done): Backend - Dependency Simplification (Removed Spring Kafka and Spring Data Redis dependencies from pom.xml and removed Redis/Kafka containers from docker-compose.yml).
+* `PET-033` (Done): Refactoring - DB Indexing & Websocket Reconnection (Added indexes on log timestamps, optimized queries to avoid full table scans, implemented WS auto-reconnect and state synchronization on frontend).
+* `PET-032` (Done): Validation - Cross-page integration and Brightness Theme Verification.
 * `PET-027` (Done): Validation - Lint, Compile & Themes (Conducted full frontend static analysis verification with zero warnings/errors. Refactored the core title headers and background containers to dynamically adapt between Light and Dark modes based on the system theme brightness).
 * `PET-026` (Done): Integration - Riverpod & Backend (Added `getCareLogs` REST client in `ApiService`, created `careLogsProvider` Riverpod FutureProvider, and integrated `_CareTimelineList` to fetch and render care logs dynamically with fallback).
 * `PET-025` (Done): UI - Weight Sparkline (Implemented "成長觀測" section, card container, details layout, and a custom path and gradient area painter drawing the 7-day weight trend line matching the SVG coordinate curves).
@@ -45,7 +50,8 @@
 
 ## ⚙️ Key Technical Stack & Preferences
 * **Java 21 / Spring Boot 3.2.5**
-* **MyBatis (XML-configured)** instead of Spring Data JPA
+* **MyBatis (XML-configured)**
 * **MariaDB** for historical records
-* **Kafka** (topic: `pet-events`) for asynchronous event streams
-* **Redis** (keyspace notifications enabled) for active timer caching
+* **Drift / SQLite** for local mobile offline storage
+* **Google Sheets API & Google Drive API** for cloud synchronization
+* **Google OAuth** for user authentication and authorization

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/pet_status.dart';
 
 final apiServiceProvider = Provider((ref) => ApiService(
   baseUrl: kIsWeb ? 'http://localhost:8080' : 'http://10.0.2.2:8080',
@@ -11,6 +12,23 @@ class ApiService {
   final String baseUrl;
 
   ApiService({required this.baseUrl});
+
+  // Fetch latest pet status
+  Future<PetStatus?> getPetStatus() async {
+    try {
+      final url = Uri.parse('$baseUrl/api/v1/care-logs/pet-status');
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        if (body['data'] != null) {
+          return PetStatus.fromJson(body['data']);
+        }
+      }
+    } catch (e) {
+      print('[ApiService] Error fetching pet status: $e');
+    }
+    return null;
+  }
 
   // Post a care log event
   Future<bool> sendCareLog(Map<String, dynamic> careLogData) async {

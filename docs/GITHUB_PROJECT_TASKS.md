@@ -148,3 +148,71 @@ This document lists all development tasks organized by Phase, mapping directly t
 *   **Checklist**:
     - [x] Create custom glassmorphism BackdropFilter container card
     - [x] Restyle HomeScreen dashboard grid to use premium GlassCard widgets
+
+---
+
+## 📋 Phase 6: Serverless Migration & Dual Storage (Phase 2 Upgrade)
+
+### 🟢 `PET-034`: Configure Drift/SQLite & Google OAuth dependencies and define PetRepository
+*   **Description**: Add dependencies to `pubspec.yaml` and define `PetRepository` abstract class.
+*   **Checklist**:
+    - [ ] Add `drift`, `google_sign_in`, and `googleapis` packages
+    - [ ] Define abstract `PetRepository` class interface
+
+### 🟢 `PET-035`: Implement Local SQLite Database & LocalPetRepository (Drift)
+*   **Description**: Write Drift schema definitions for offline storage and implement `LocalPetRepository`.
+*   **Checklist**:
+    - [ ] Create Drift table schemas
+    - [ ] Implement local CRUD operations matching repository interface
+
+### 🟢 `PET-036`: Configure Google Sign-In, Google Sheets API & Write Permission check
+*   **Description**: Implement Google login flow, Google Sheets data mapping, and validation of Editor write permission during linking.
+*   **Checklist**:
+    - [ ] Integrate Google Sign-in flow and retrieve API token
+    - [ ] Implement GoogleSheetsPetRepository CRUD methods
+    - [ ] Implement write-permission dry-run validation for option 3
+
+### 🟢 `PET-037`: Implement Database Selection Onboarding Screen (storage_setup_screen.dart)
+*   **Description**: Build a clean onboarding screen with three options: Local, Create New Sheet, Link Existing Sheet.
+*   **Checklist**:
+    - [ ] Create `storage_setup_screen.dart` with three selection cards
+    - [ ] Wire up navigation and authentication triggers for each choice
+
+### 🟢 `PET-038`: Upgrade Settings Page (settings_screen.dart) with Onboarding Configuration
+*   **Description**: Restyle Settings screen to support switching databases, custom spreadsheet naming, and listing Google accounts.
+*   **Checklist**:
+    - [ ] Add custom text field for sheet naming
+    - [ ] Implement database switching controls and OAuth connect/disconnect buttons
+
+### 🟢 `PET-039`: Mobile Native Platform Configurations (Android & iOS)
+*   **Description**: Configure native build files for OAuth credential handshakes.
+*   **Checklist**:
+    - [ ] Set up SHA-1 and `google-services.json` on Android
+    - [ ] Configure `Info.plist` CFBundleURLTypes on iOS
+
+### 🟢 `PET-040`: Spring Boot Server Backend Compatibility Verification
+*   **Description**: Ensure original HTTP/WS server implementation remains compatible as a repository mode.
+*   **Checklist**:
+    - [ ] Validate HTTP/WebSocket repository connection
+    - [ ] Complete regression testing on Spring Boot services
+
+### 🟢 `PET-041`: Remove Kafka & Redis dependencies and simplify Docker Compose
+*   **Description**: Remove spring-kafka and spring-boot-starter-data-redis dependencies, config classes, and containers.
+*   **Checklist**:
+    - [ ] Remove dependencies from pom.xml
+    - [ ] Delete KafkaProducerConfig.java and RedisConfig.java
+    - [ ] Update docker-compose.yml to keep only MariaDB
+
+### 🟢 `PET-042`: Refactor Kafka ingestion & Redis state machine to synchronous DB operations
+*   **Description**: Refactor endpoints to read/write from/to MySQL/MariaDB directly and publish real-time notifications via WebSocket.
+*   **Checklist**:
+    - [ ] Update CareLogController.java to invoke persistence service synchronously
+    - [ ] Rewrite pet status endpoint using direct MyBatis aggregation queries
+    - [ ] Delete CareLogConsumer.java, CareLogProducer.java, and RedisStateService.java
+
+### 🟢 `PET-043`: Re-implement Dehydration Alerts using Database Query & Spring Scheduling
+*   **Description**: Detect water alerts by checking last drinking time dynamically or via scheduling instead of Redis expiration listener.
+*   **Checklist**:
+    - [ ] Delete RedisKeyExpirationListener.java
+    - [ ] Implement query-based dehydration check using @Scheduled
+    - [ ] Update unit and integration tests to remove Redis/Kafka dependencies

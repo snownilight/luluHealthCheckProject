@@ -148,4 +148,22 @@ public class CareLogControllerTest {
                 .andExpect(jsonPath("$.message").value("Care logs retrieved successfully"))
                 .andExpect(jsonPath("$.data").isArray());
     }
+
+    @Test
+    public void testGetPetStatus_Success() throws Exception {
+        com.lulu.health.model.PetStatus mockStatus = com.lulu.health.model.PetStatus.builder()
+                .lastWeightKg(5.1)
+                .todayWaterIntakeMl(200.0)
+                .todayFoodIntakeG(120.0)
+                .build();
+        org.mockito.Mockito.when(redisStateService.getPetStatus()).thenReturn(mockStatus);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/v1/care-logs/pet-status"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.message").value("Fetched latest pet status successfully"))
+                .andExpect(jsonPath("$.data.lastWeightKg").value(5.1))
+                .andExpect(jsonPath("$.data.todayWaterIntakeMl").value(200.0))
+                .andExpect(jsonPath("$.data.todayFoodIntakeG").value(120.0));
+    }
 }

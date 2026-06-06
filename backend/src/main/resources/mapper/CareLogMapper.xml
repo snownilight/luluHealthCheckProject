@@ -16,4 +16,10 @@
         SELECT * FROM care_logs ORDER BY event_timestamp DESC
     </select>
 
+    <select id="findByTimestampRange" resultType="com.lulu.health.model.CareLog">
+        SELECT * FROM care_logs
+        WHERE event_timestamp &gt;= #{start} AND event_timestamp &lt; #{end}
+        ORDER BY event_timestamp DESC
+    </select>
+
 </mapper>

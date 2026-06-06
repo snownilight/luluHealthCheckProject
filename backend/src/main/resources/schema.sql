@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS care_logs (
     unit VARCHAR(10),
     note VARCHAR(255),
     event_timestamp TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_care_logs_event_timestamp (event_timestamp)
 );
 
 -- Weekly/Monthly historical weight tracking
@@ -27,5 +28,6 @@ CREATE TABLE IF NOT EXISTS weight_logs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     weight_kg DOUBLE NOT NULL,
     recorded_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_weight_logs_recorded_at (recorded_at)
 );

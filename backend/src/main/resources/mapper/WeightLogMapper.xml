@@ -12,4 +12,10 @@
         SELECT * FROM weight_logs ORDER BY recorded_at DESC
     </select>
 
+    <select id="findByRecordedAtRange" resultType="com.lulu.health.model.WeightLog">
+        SELECT * FROM weight_logs
+        WHERE recorded_at &gt;= #{start} AND recorded_at &lt; #{end}
+        ORDER BY recorded_at DESC
+    </select>
+
 </mapper>

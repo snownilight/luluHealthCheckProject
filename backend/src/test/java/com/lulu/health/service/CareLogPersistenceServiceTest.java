@@ -78,13 +78,15 @@ public class CareLogPersistenceServiceTest {
 
         // Mock DB returns
         List<CareLog> mockAllLogs = new ArrayList<>(batch);
-        when(careLogMapper.findAll()).thenReturn(mockAllLogs);
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
+        when(careLogMapper.findByTimestampRange(startOfDay, endOfDay)).thenReturn(mockAllLogs);
 
         WeightLog mockWeightLog = WeightLog.builder()
                 .weightKg(3.2)
                 .recordedAt(timestamp)
                 .build();
-        when(weightLogMapper.findAllOrderByRecordedAtDesc()).thenReturn(Collections.singletonList(mockWeightLog));
+        when(weightLogMapper.findByRecordedAtRange(startOfDay, endOfDay)).thenReturn(Collections.singletonList(mockWeightLog));
         when(dailyHealthSummaryMapper.findByDate(date)).thenReturn(null);
 
         // Execute

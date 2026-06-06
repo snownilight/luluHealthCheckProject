@@ -3,7 +3,10 @@ package com.lulu.health.controller;
 import com.lulu.health.dto.ApiResponse;
 import com.lulu.health.dto.CareLogRequest;
 import com.lulu.health.model.CareLog;
+import com.lulu.health.model.PetStatus;
 import com.lulu.health.producer.CareLogProducer;
+import com.lulu.health.service.RedisStateService;
+import com.lulu.health.service.CareLogPersistenceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +22,23 @@ import java.util.UUID;
 public class CareLogController {
 
     private final CareLogProducer careLogProducer;
-    private final com.lulu.health.service.CareLogPersistenceService careLogPersistenceService;
+    private final CareLogPersistenceService careLogPersistenceService;
+    private final RedisStateService redisStateService;
+
+    @GetMapping("/pet-status")
+    public ApiResponse<PetStatus> getPetStatus() {
+        log.info("Request received for latest pet status");
+        PetStatus status = redisStateService.getPetStatus();
+        if (status == null) {
+            status = PetStatus.builder()
+                    .lastWeightKg(4.8)
+                    .todayWaterIntakeMl(0.0)
+                    .todayFoodIntakeG(0.0)
+                    .lastActiveTime(LocalDateTime.now().minusMinutes(15))
+                    .build();
+        }
+        return ApiResponse.success("Fetched latest pet status successfully", status);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)

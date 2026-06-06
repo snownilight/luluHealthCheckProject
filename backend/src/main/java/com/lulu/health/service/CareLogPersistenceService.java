@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,7 @@ public class CareLogPersistenceService {
             if (careLog.getEventType() == EventType.WEIGHT_UPDATE && careLog.getValue() != null) {
                 WeightLog weightLog = WeightLog.builder()
                         .weightKg(careLog.getValue())
-                        .recordedAt(careLog.getEventTimestamp() != null ? careLog.getEventTimestamp() : java.time.LocalDateTime.now())
+                        .recordedAt(careLog.getEventTimestamp() != null ? careLog.getEventTimestamp() : LocalDateTime.now())
                         .build();
                 weightLogMapper.insert(weightLog);
             }
@@ -62,31 +63,30 @@ public class CareLogPersistenceService {
     private void updateDailySummary(LocalDate date) {
         log.debug("Updating daily summary for date: {}", date);
 
-        // Fetch all care logs and weight logs
-        List<CareLog> allLogs = careLogMapper.findAll();
-        List<WeightLog> allWeights = weightLogMapper.findAllOrderByRecordedAtDesc();
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.plusDays(1).atStartOfDay();
+
+        // Fetch only logs and weights for the specific date range
+        List<CareLog> dayLogs = careLogMapper.findByTimestampRange(startOfDay, endOfDay);
+        List<WeightLog> dayWeights = weightLogMapper.findByRecordedAtRange(startOfDay, endOfDay);
 
         // Calculate totals for this date
         double waterSum = 0;
         double foodSum = 0;
-        for (CareLog cl : allLogs) {
-            if (cl.getEventTimestamp() != null && cl.getEventTimestamp().toLocalDate().equals(date)) {
-                if (cl.getEventType() == EventType.DRINKING && cl.getValue() != null) {
-                    waterSum += cl.getValue();
-                } else if (cl.getEventType() == EventType.FEEDING && cl.getValue() != null) {
-                    foodSum += cl.getValue();
-                }
+        for (CareLog cl : dayLogs) {
+            if (cl.getEventType() == EventType.DRINKING && cl.getValue() != null) {
+                waterSum += cl.getValue();
+            } else if (cl.getEventType() == EventType.FEEDING && cl.getValue() != null) {
+                foodSum += cl.getValue();
             }
         }
 
         // Calculate average weight
         double weightSum = 0;
         int weightCount = 0;
-        for (WeightLog wl : allWeights) {
-            if (wl.getRecordedAt() != null && wl.getRecordedAt().toLocalDate().equals(date)) {
-                weightSum += wl.getWeightKg();
-                weightCount++;
-            }
+        for (WeightLog wl : dayWeights) {
+            weightSum += wl.getWeightKg();
+            weightCount++;
         }
         double avgWeight = weightCount > 0 ? (weightSum / weightCount) : 0.0;
 

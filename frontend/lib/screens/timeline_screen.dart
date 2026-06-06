@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../services/api_service.dart';
+import '../services/storage_settings_provider.dart';
+import '../services/pet_status_provider.dart';
 
 String _getTranslatedEventType(String type) {
   switch (type.toUpperCase()) {
@@ -53,27 +54,18 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
     setState(() {
       _isLoading = true;
     });
-    final apiService = ref.read(apiServiceProvider);
-    final response = await apiService.getWeeklyWeightTrend(); // Fallback trend or let's use the new api
-    
-    // Fetch all logs from the backend GET endpoint
     try {
-      final url = Uri.parse('${apiService.baseUrl}/api/v1/care-logs');
-      final httpResponse = await httpGet(url);
-      if (httpResponse.statusCode == 200) {
-        final Map<String, dynamic> body = jsonDecode(httpResponse.body);
-        if (body['data'] is List) {
-          setState(() {
-            _logs = body['data'];
-            // Sort by timestamp descending
-            _logs.sort((a, b) {
-              final aTime = DateTime.tryParse(a['eventTimestamp'] ?? '') ?? DateTime.now();
-              final bTime = DateTime.tryParse(b['eventTimestamp'] ?? '') ?? DateTime.now();
-              return bTime.compareTo(aTime);
-            });
-          });
-        }
-      }
+      final repository = ref.read(petRepositoryProvider);
+      final logs = await repository.getCareLogs();
+      setState(() {
+        _logs = logs;
+        // Sort by timestamp descending
+        _logs.sort((a, b) {
+          final aTime = DateTime.tryParse(a['eventTimestamp'] ?? '') ?? DateTime.now();
+          final bTime = DateTime.tryParse(b['eventTimestamp'] ?? '') ?? DateTime.now();
+          return bTime.compareTo(aTime);
+        });
+      });
     } catch (e) {
       print('Error fetching logs: $e');
     } finally {
@@ -1658,16 +1650,16 @@ class _MockResponse {
 }
 
 // Add Log Bottom Sheet Form
-class _AddLogSheet extends StatefulWidget {
+class _AddLogSheet extends ConsumerStatefulWidget {
   final VoidCallback onSuccess;
 
   const _AddLogSheet({required this.onSuccess});
 
   @override
-  State<_AddLogSheet> createState() => _AddLogSheetState();
+  ConsumerState<_AddLogSheet> createState() => _AddLogSheetState();
 }
 
-class _AddLogSheetState extends State<_AddLogSheet> {
+class _AddLogSheetState extends ConsumerState<_AddLogSheet> {
   final _formKey = GlobalKey<FormState>();
   String _eventType = 'FEEDING';
   String _operator = 'Me';
@@ -1710,32 +1702,35 @@ class _AddLogSheetState extends State<_AddLogSheet> {
       'eventTimestamp': DateTime.now().toIso8601String(),
     };
 
-    // Send via REST client using dynamic dynamic URL
     try {
-      final url = Uri.parse('http://localhost:8080/api/v1/care-logs');
-      final response = await PackageHttpInvocationHelper.get(url); // Mock or real depending on platform
+      final repository = ref.read(petRepositoryProvider);
+      final success = await repository.saveCareLog(data);
       
-      // Real http post
-      final realUrl = Uri.parse('http://localhost:8080/api/v1/care-logs');
-      // For compiling safety:
-      final Map<String, String> headers = {'Content-Type': 'application/json'};
-      final String bodyStr = '{"eventType": "$_eventType", "operator": "$_operator", "value": ${val ?? 0.0}, "unit": "${_getUnit()}", "note": "${_noteController.text}"}';
-      
-      // Let's pretend it succeeds to make local testing robust
-      final translatedType = _getTranslatedEventType(_eventType);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('成功記錄 $translatedType！')),
-      );
-      widget.onSuccess();
-      Navigator.pop(context);
+      if (success) {
+        // Trigger status refresh immediately
+        ref.read(petStatusProvider.notifier).refreshStatus();
+
+        final translatedType = _getTranslatedEventType(_eventType);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('成功記錄 $translatedType！')),
+        );
+        widget.onSuccess();
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('新增紀錄失敗。')),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('新增紀錄失敗。')),
+        const SnackBar(content: Text('新增紀錄發生錯誤。')),
       );
     } finally {
-      setState(() {
-        _isSubmitting = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
 

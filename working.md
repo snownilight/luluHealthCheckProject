@@ -1,13 +1,17 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `None` (Waiting for next task assignment: `PET-037` / `PET-038`)
+* **Current Active Task**: `None` (Completed Phase 6: Onboarding and Settings page upgrades)
 * **Status**: Idle
 * **Plan**:
-  - [ ] 等待使用者分配任務，後續將為設定頁面與 Onboarding 儲存引導畫面進行開發
+  - [ ] 等待使用者指派下一個階段或新任務
 
 ---
 
 ## 🟢 Completed Tasks
+* `PET-040` (Done): Backend compatibility verification & Refactored frontend screens (`timeline_screen.dart`, `trends_screen.dart`) and providers to interact through the unified `petRepositoryProvider` contract instead of hardcoded REST URLs.
+* `PET-039` (Done): Configured iOS `Info.plist` and Android Gradle instructions (`docs/native_oauth_setup.md`) for Google OAuth credentials & Play Services.
+* `PET-038` (Done): Settings upgrade (`settings_screen.dart`) implementing dynamic storage source switching, reactive Google OAuth connectivity status, and custom spreadsheet renaming.
+* `PET-037` (Done): Storage onboarding screen (`storage_setup_screen.dart`) implementing the Cozy Warm Cream style, three glassmorphism option cards (Local SQLite, Create Cloud Sheet, Link Existing Sheet), and automated Google Drive write capability check (`capabilities/canEdit`).
 * `PET-036` (Done): Cloud Sync - Google Sheets Integration (Implemented Google OAuth flow, sheets initialization for CareLogs/WeightLogs/DailySummaries, and Google Drive API write capability check using `capabilities/canEdit`).
 * `PET-035` (Done): Storage - SQLite Database & LocalPetRepository (Implemented local tables schema using Drift, ran build_runner generator, and implemented full offline CRUD & daily summary aggregation logic).
 * `PET-034` (Done): Architecture - PetRepository abstraction (Configured dependencies for Drift, sqlite3, google_sign_in, googleapis, and defined the `PetRepository` abstract class).

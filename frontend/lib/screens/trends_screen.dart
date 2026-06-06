@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import '../services/api_service.dart';
+import '../services/storage_settings_provider.dart';
 
 class TrendsScreen extends ConsumerStatefulWidget {
   const TrendsScreen({super.key});
@@ -84,9 +84,9 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
     });
 
     try {
-      final apiService = ref.read(apiServiceProvider);
-      final weightData = await apiService.getWeeklyWeightTrend();
-      final summaryData = await apiService.getMonthlyDailySummary();
+      final repository = ref.read(petRepositoryProvider);
+      final weightData = await repository.getWeeklyWeightTrend();
+      final summaryData = await repository.getMonthlyDailySummary();
 
       setState(() {
         _weightLogs = weightData;

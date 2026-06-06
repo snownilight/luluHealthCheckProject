@@ -1,26 +1,25 @@
 package com.lulu.health.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lulu.health.config.KafkaProducerConfig;
-import com.lulu.health.consumer.CareLogConsumer;
 import com.lulu.health.dto.CareLogRequest;
-import com.lulu.health.listener.RedisKeyExpirationListener;
 import com.lulu.health.model.CareLog;
 import com.lulu.health.model.EventType;
+import com.lulu.health.mapper.CareLogMapper;
 import com.lulu.health.service.CareLogPersistenceService;
 import com.lulu.health.service.HealthTrendService;
 import com.lulu.health.service.NotificationService;
-import com.lulu.health.service.RedisStateService;
+import com.lulu.health.scheduler.DehydrationAlertScheduler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.redis.connection.Message;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -31,14 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.autoconfigure.exclude=" +
         "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration," +
         "org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration," +
-        "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration," +
         "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration",
-    "spring.cache.type=none",
-    "spring.kafka.consumer.group-id=simulation-group"
+    "spring.cache.type=none"
 })
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@EmbeddedKafka(partitions = 1, topics = {KafkaProducerConfig.PET_EVENTS_TOPIC})
 public class EndToEndSimulationTest {
 
     @Autowired
@@ -54,13 +50,13 @@ public class EndToEndSimulationTest {
     private HealthTrendService healthTrendService;
 
     @MockBean
-    private RedisStateService redisStateService;
+    private CareLogMapper careLogMapper;
 
     @MockBean
     private NotificationService notificationService;
 
     @Autowired
-    private CareLogConsumer careLogConsumer;
+    private DehydrationAlertScheduler dehydrationAlertScheduler;
 
     @Test
     public void testFullSimulation_EventIngestionToDehydrationAlert() throws Exception {
@@ -77,33 +73,26 @@ public class EndToEndSimulationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isAccepted());
 
-        // 2. Simulate consumer processing the event (e.g. from Kafka)
-        CareLog eventLog = CareLog.builder()
+        // Verify that the persistence service was invoked synchronously
+        verify(careLogPersistenceService).persistSingle(any());
+
+        // 2. Simulate scheduler detecting no drinking for 8+ hours
+        CareLog oldDrinkingLog = CareLog.builder()
                 .eventId("mock-event-id")
                 .eventType(EventType.DRINKING)
                 .operator("Dad")
                 .value(100.0)
                 .unit("ml")
                 .note("Refilled fresh water bowl")
+                .eventTimestamp(LocalDateTime.now().minusHours(9)) // 9 hours ago
                 .build();
 
-        careLogConsumer.consumeCareLog(eventLog);
+        when(careLogMapper.findAll()).thenReturn(List.of(oldDrinkingLog));
 
-        // Verify that the Redis state service was invoked to record status updates and timers
-        verify(redisStateService).incrementField("todayWaterIntakeMl", 100.0);
-        verify(redisStateService).setKeyWithTtl(CareLogConsumer.WATER_TIMER_KEY, "active", CareLogConsumer.WATER_TIMER_TTL_SECONDS);
+        // Invoke scheduler check manually
+        dehydrationAlertScheduler.checkPetStatusTimers();
 
-        // 3. Simulate water timer expiration (Redis keyspace event)
-        Message expirationMessage = mock(Message.class);
-        when(expirationMessage.toString()).thenReturn(CareLogConsumer.WATER_TIMER_KEY);
-
-        RedisKeyExpirationListener listener = new RedisKeyExpirationListener(
-                mock(org.springframework.data.redis.listener.RedisMessageListenerContainer.class),
-                notificationService
-        );
-        listener.onMessage(expirationMessage, new byte[0]);
-
-        // Verify that the dehydration alert notification was successfully triggered
+        // Verify that the dehydration alert notification was triggered
         verify(notificationService).sendDehydrationAlert();
     }
 }

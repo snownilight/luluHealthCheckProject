@@ -4,13 +4,12 @@ import com.lulu.health.dto.ApiResponse;
 import com.lulu.health.dto.CareLogRequest;
 import com.lulu.health.model.CareLog;
 import com.lulu.health.model.PetStatus;
-import com.lulu.health.producer.CareLogProducer;
-import com.lulu.health.service.RedisStateService;
 import com.lulu.health.service.CareLogPersistenceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,22 +20,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CareLogController {
 
-    private final CareLogProducer careLogProducer;
     private final CareLogPersistenceService careLogPersistenceService;
-    private final RedisStateService redisStateService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/pet-status")
     public ApiResponse<PetStatus> getPetStatus() {
         log.info("Request received for latest pet status");
-        PetStatus status = redisStateService.getPetStatus();
-        if (status == null) {
-            status = PetStatus.builder()
-                    .lastWeightKg(4.8)
-                    .todayWaterIntakeMl(0.0)
-                    .todayFoodIntakeG(0.0)
-                    .lastActiveTime(LocalDateTime.now().minusMinutes(15))
-                    .build();
-        }
+        PetStatus status = careLogPersistenceService.getPetStatus();
         return ApiResponse.success("Fetched latest pet status successfully", status);
     }
 
@@ -57,10 +47,19 @@ public class CareLogController {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        // Send to Kafka
-        careLogProducer.sendCareLogEvent(careLog);
+        // Persist directly to DB synchronously
+        careLogPersistenceService.persistSingle(careLog);
 
-        return ApiResponse.success("Care log accepted and queued for processing", careLog);
+        // Fetch updated status and push to WebSocket
+        try {
+            PetStatus updatedStatus = careLogPersistenceService.getPetStatus();
+            messagingTemplate.convertAndSend("/topic/status", updatedStatus);
+            log.info("Successfully pushed updated status via WebSocket to /topic/status: {}", updatedStatus);
+        } catch (Exception e) {
+            log.error("Failed to push status update via WebSocket", e);
+        }
+
+        return ApiResponse.success("Care log processed successfully", careLog);
     }
 
     @GetMapping

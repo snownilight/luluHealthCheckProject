@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(properties = {
-    "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration",
+    "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration,org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration",
     "spring.kafka.consumer.group-id=test-group"
 })
 @ActiveProfiles("test")
@@ -42,10 +42,7 @@ public class HealthTrendServiceCachingTest {
     private CareLogPersistenceService careLogPersistenceService;
 
     @MockBean
-    private RedisStateService redisStateService;
-
-    @MockBean
-    private com.lulu.health.listener.RedisKeyExpirationListener redisKeyExpirationListener;
+    private com.lulu.health.scheduler.DehydrationAlertScheduler dehydrationAlertScheduler;
 
     @BeforeEach
     public void setUp() {

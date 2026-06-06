@@ -175,44 +175,44 @@ This document lists all development tasks organized by Phase, mapping directly t
 ### 🟢 `PET-037`: Implement Database Selection Onboarding Screen (storage_setup_screen.dart)
 *   **Description**: Build a clean onboarding screen with three options: Local, Create New Sheet, Link Existing Sheet.
 *   **Checklist**:
-    - [ ] Create `storage_setup_screen.dart` with three selection cards
-    - [ ] Wire up navigation and authentication triggers for each choice
+    - [x] Create `storage_setup_screen.dart` with three selection cards
+    - [x] Wire up navigation and authentication triggers for each choice
 
 ### 🟢 `PET-038`: Upgrade Settings Page (settings_screen.dart) with Onboarding Configuration
 *   **Description**: Restyle Settings screen to support switching databases, custom spreadsheet naming, and listing Google accounts.
 *   **Checklist**:
-    - [ ] Add custom text field for sheet naming
-    - [ ] Implement database switching controls and OAuth connect/disconnect buttons
+    - [x] Add custom text field for sheet naming
+    - [x] Implement database switching controls and OAuth connect/disconnect buttons
 
 ### 🟢 `PET-039`: Mobile Native Platform Configurations (Android & iOS)
 *   **Description**: Configure native build files for OAuth credential handshakes.
 *   **Checklist**:
-    - [ ] Set up SHA-1 and `google-services.json` on Android
-    - [ ] Configure `Info.plist` CFBundleURLTypes on iOS
+    - [x] Set up SHA-1 and `google-services.json` on Android
+    - [x] Configure `Info.plist` CFBundleURLTypes on iOS
 
 ### 🟢 `PET-040`: Spring Boot Server Backend Compatibility Verification
 *   **Description**: Ensure original HTTP/WS server implementation remains compatible as a repository mode.
 *   **Checklist**:
-    - [ ] Validate HTTP/WebSocket repository connection
-    - [ ] Complete regression testing on Spring Boot services
+    - [x] Validate HTTP/WebSocket repository connection
+    - [x] Complete regression testing on Spring Boot services
 
 ### 🟢 `PET-041`: Remove Kafka & Redis dependencies and simplify Docker Compose
 *   **Description**: Remove spring-kafka and spring-boot-starter-data-redis dependencies, config classes, and containers.
 *   **Checklist**:
-    - [ ] Remove dependencies from pom.xml
-    - [ ] Delete KafkaProducerConfig.java and RedisConfig.java
-    - [ ] Update docker-compose.yml to keep only MariaDB
+    - [x] Remove dependencies from pom.xml
+    - [x] Delete KafkaProducerConfig.java and RedisConfig.java
+    - [x] Update docker-compose.yml to keep only MariaDB
 
 ### 🟢 `PET-042`: Refactor Kafka ingestion & Redis state machine to synchronous DB operations
 *   **Description**: Refactor endpoints to read/write from/to MySQL/MariaDB directly and publish real-time notifications via WebSocket.
 *   **Checklist**:
-    - [ ] Update CareLogController.java to invoke persistence service synchronously
-    - [ ] Rewrite pet status endpoint using direct MyBatis aggregation queries
-    - [ ] Delete CareLogConsumer.java, CareLogProducer.java, and RedisStateService.java
+    - [x] Update CareLogController.java to invoke persistence service synchronously
+    - [x] Rewrite pet status endpoint using direct MyBatis aggregation queries
+    - [x] Delete CareLogConsumer.java, CareLogProducer.java, and RedisStateService.java
 
 ### 🟢 `PET-043`: Re-implement Dehydration Alerts using Database Query & Spring Scheduling
 *   **Description**: Detect water alerts by checking last drinking time dynamically or via scheduling instead of Redis expiration listener.
 *   **Checklist**:
-    - [ ] Delete RedisKeyExpirationListener.java
-    - [ ] Implement query-based dehydration check using @Scheduled
-    - [ ] Update unit and integration tests to remove Redis/Kafka dependencies
+    - [x] Delete RedisKeyExpirationListener.java
+    - [x] Implement query-based dehydration check using @Scheduled
+    - [x] Update unit and integration tests to remove Redis/Kafka dependencies

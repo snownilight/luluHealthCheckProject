@@ -1,6 +1,6 @@
 # 🐾 Pet Health Tracker - Active Status
 
-* **Current Active Task**: `None` (Completed Phase 6: Onboarding and Settings page upgrades)
+* **Current Active Task**: `None`
 * **Status**: Idle
 * **Plan**:
   - [ ] 等待使用者指派下一個階段或新任務
@@ -8,6 +8,8 @@
 ---
 
 ## 🟢 Completed Tasks
+* `PET-045` (Done): Fixed Riverpod reactivity bug by adding a watch on `storageSettingsProvider` inside `careLogsProvider`. Added `ref.listen` on storage settings in `TimelineScreen` and `TrendsScreen` to trigger instant refetches when users switch storage modes or link sheets. Increased homepage timeline limit to 5 logs.
+* `PET-044` (Done): Resolved `sqlite3.wasm` version mismatch producing `LinkError: WebAssembly.instantiate()` by downloading matching precompiled sqlite3 v2.4.5 wasm. Configured Google OAuth client-id and enabled People API, successfully verifying end-to-end Google Sheets creation and cloud synchronization.
 * `PET-040` (Done): Backend compatibility verification & Refactored frontend screens (`timeline_screen.dart`, `trends_screen.dart`) and providers to interact through the unified `petRepositoryProvider` contract instead of hardcoded REST URLs.
 * `PET-039` (Done): Configured iOS `Info.plist` and Android Gradle instructions (`docs/native_oauth_setup.md`) for Google OAuth credentials & Play Services.
 * `PET-038` (Done): Settings upgrade (`settings_screen.dart`) implementing dynamic storage source switching, reactive Google OAuth connectivity status, and custom spreadsheet renaming.

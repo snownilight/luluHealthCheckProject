@@ -1,8 +1,5 @@
-import 'dart:io';
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
+import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 part 'local_database.g.dart';
@@ -35,18 +32,25 @@ class DailySummaries extends Table {
 
 @DriftDatabase(tables: [CareLogs, WeightLogs, DailySummaries])
 class LocalDatabase extends _$LocalDatabase {
-  LocalDatabase() : super(_openConnection());
+  LocalDatabase()
+      : super(
+          driftDatabase(
+            name: 'pet_health',
+            web: DriftWebOptions(
+              sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+              driftWorker: Uri.parse('drift_worker.js'),
+              onResult: (result) {
+                print('[DriftWeb] Chosen implementation: ${result.chosenImplementation}');
+                if (result.missingFeatures.isNotEmpty) {
+                  print('[DriftWeb] Missing features: ${result.missingFeatures}');
+                }
+              },
+            ),
+          ),
+        );
 
   @override
   int get schemaVersion => 1;
-}
-
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'pet_health.db'));
-    return NativeDatabase.createInBackground(file);
-  });
 }
 
 final localDatabaseProvider = Provider<LocalDatabase>((ref) {

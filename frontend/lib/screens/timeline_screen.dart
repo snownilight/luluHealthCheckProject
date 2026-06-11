@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../services/storage_settings_provider.dart';
 import '../services/pet_status_provider.dart';
+import '../services/api_service.dart';
 
 String _getTranslatedEventType(String type) {
   switch (type.toUpperCase()) {
@@ -131,6 +132,9 @@ class _TimelineScreenState extends ConsumerState<TimelineScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<StorageSettings>(storageSettingsProvider, (previous, next) {
+      _fetchLogs();
+    });
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -1709,6 +1713,7 @@ class _AddLogSheetState extends ConsumerState<_AddLogSheet> {
       if (success) {
         // Trigger status refresh immediately
         ref.read(petStatusProvider.notifier).refreshStatus();
+        ref.invalidate(careLogsProvider);
 
         final translatedType = _getTranslatedEventType(_eventType);
         ScaffoldMessenger.of(context).showSnackBar(

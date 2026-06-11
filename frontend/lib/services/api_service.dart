@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/pet_status.dart';
+import 'storage_settings_provider.dart';
 
 final apiServiceProvider = Provider((ref) => ApiService(
   baseUrl: kIsWeb ? 'http://localhost:8080' : 'http://10.0.2.2:8080',
@@ -93,8 +94,10 @@ class ApiService {
 }
 
 final careLogsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
-  final apiService = ref.watch(apiServiceProvider);
-  final logs = await apiService.getCareLogs();
+  // Watch storageSettingsProvider so the list re-fetches when storage mode or sheet ID changes
+  ref.watch(storageSettingsProvider);
+  final repository = ref.watch(petRepositoryProvider);
+  final logs = await repository.getCareLogs();
   // Sort descending by eventTimestamp
   logs.sort((a, b) {
     final aTime = DateTime.tryParse(a['eventTimestamp'] ?? '') ?? DateTime.now();

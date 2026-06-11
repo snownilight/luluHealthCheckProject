@@ -103,6 +103,9 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<StorageSettings>(storageSettingsProvider, (previous, next) {
+      _fetchTrendData();
+    });
     // Determine active source lists (backend data or fallbacks)
     final weightList = _weightLogs.isNotEmpty ? _weightLogs : _mockWeightLogs;
     final summaryList = _dailySummaries.isNotEmpty ? _dailySummaries : _mockDailySummaries;

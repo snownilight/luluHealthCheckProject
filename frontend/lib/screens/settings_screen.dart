@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/storage_settings_provider.dart';
+import '../services/api_service.dart';
+import '../services/pet_status_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -244,12 +246,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             onPressed: () async {
                               if (googleUser != null) {
                                 await googleRepo.signOut();
+                                ref.invalidate(careLogsProvider);
+                                ref.read(petStatusProvider.notifier).refreshStatus();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('已登出 Google 帳號。')),
                                 );
                               } else {
                                 final account = await googleRepo.signIn();
                                 if (account != null) {
+                                  ref.invalidate(careLogsProvider);
+                                  ref.read(petStatusProvider.notifier).refreshStatus();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text('登入成功: ${account.email}')),
                                   );
@@ -460,7 +466,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               height: 1,
               color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFF5EBE6),
             ),
-            itemBuilder: (context, index) => tiles[index],
+            itemBuilder: (context, index) {
+              final isFirst = index == 0;
+              final isLast = index == tiles.length - 1;
+              BorderRadius? borderRadius;
+              if (isFirst && isLast) {
+                borderRadius = BorderRadius.circular(24);
+              } else if (isFirst) {
+                borderRadius = const BorderRadius.vertical(top: Radius.circular(24));
+              } else if (isLast) {
+                borderRadius = const BorderRadius.vertical(bottom: Radius.circular(24));
+              }
+              return Material(
+                color: Colors.transparent,
+                clipBehavior: borderRadius != null ? Clip.antiAlias : Clip.none,
+                borderRadius: borderRadius,
+                child: tiles[index],
+              );
+            },
           ),
         ),
       ],

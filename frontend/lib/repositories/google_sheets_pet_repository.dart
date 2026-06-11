@@ -37,7 +37,8 @@ class GoogleSheetsPetRepository implements PetRepository {
   /// Trigger Google OAuth Login
   Future<GoogleSignInAccount?> signIn() async {
     try {
-      _currentUser = await _googleSignIn.signInSilently() ?? await _googleSignIn.signIn();
+      // Force interactive sign-in to guarantee a fresh consent prompt and valid access token
+      _currentUser = await _googleSignIn.signIn();
       return _currentUser;
     } catch (e) {
       print('[GoogleSheetsPetRepository] Error during Google Sign-in: $e');
@@ -61,13 +62,37 @@ class GoogleSheetsPetRepository implements PetRepository {
   Future<AuthClient?> _getAuthClient() async {
     var user = _currentUser;
     if (user == null) {
-      user = await signIn();
+      // ONLY try to sign in silently here. Interactive sign-in requires a user gesture
+      // and should only be triggered by manual button clicks to avoid crashes and pop-up errors.
+      user = await _googleSignIn.signInSilently();
+      _currentUser = user;
     }
     if (user == null) {
       return null;
     }
+    
     final headers = await user.authHeaders;
-    return AuthClient(headers);
+    final Map<String, String> finalHeaders = Map.from(headers);
+    
+    // Web Fallback: If authHeaders is empty or missing Authorization, manually fetch accessToken
+    final hasAuth = finalHeaders.keys.any((k) => k.toLowerCase() == 'authorization');
+    if (!hasAuth) {
+      try {
+        print('[GoogleSheetsPetRepository] authHeaders is missing Authorization. Attempting fallback via user.authentication...');
+        final auth = await user.authentication;
+        final token = auth.accessToken;
+        if (token != null) {
+          finalHeaders['Authorization'] = 'Bearer $token';
+          print('[GoogleSheetsPetRepository] Manually attached Authorization header from accessToken.');
+        } else {
+          print('[GoogleSheetsPetRepository] Warning: accessToken is null.');
+        }
+      } catch (e) {
+        print('[GoogleSheetsPetRepository] Error fetching authentication token: $e');
+      }
+    }
+    
+    return AuthClient(finalHeaders);
   }
 
   /// Verify if the user has Editor/Owner (write) permissions for the spreadsheet

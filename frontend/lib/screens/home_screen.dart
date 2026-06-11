@@ -568,8 +568,8 @@ class _CareTimelineList extends ConsumerWidget {
         if (logs.isEmpty) {
           return const _DefaultCareTimeline();
         }
-        // Show the latest 2 logs
-        final displayLogs = logs.take(2).toList();
+        // Show the latest 5 logs
+        final displayLogs = logs.take(5).toList();
         return Column(
           children: List.generate(displayLogs.length, (index) {
             final log = displayLogs[index];

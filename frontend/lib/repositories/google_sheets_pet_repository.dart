@@ -23,8 +23,7 @@ class GoogleSheetsPetRepository implements PetRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
       'email',
-      'https://www.googleapis.com/auth/spreadsheets',
-      'https://www.googleapis.com/auth/drive.metadata.readonly',
+      'https://www.googleapis.com/auth/drive.file', // 🔒 僅能讀寫本 App 建立的檔案
     ],
   );
 
@@ -42,6 +41,17 @@ class GoogleSheetsPetRepository implements PetRepository {
       return _currentUser;
     } catch (e) {
       print('[GoogleSheetsPetRepository] Error during Google Sign-in: $e');
+      return null;
+    }
+  }
+
+  /// Try silent Google Sign-In
+  Future<GoogleSignInAccount?> signInSilently() async {
+    try {
+      _currentUser = await _googleSignIn.signInSilently();
+      return _currentUser;
+    } catch (e) {
+      print('[GoogleSheetsPetRepository] Error during silent Google Sign-in: $e');
       return null;
     }
   }
@@ -111,6 +121,31 @@ class GoogleSheetsPetRepository implements PetRepository {
     } catch (e) {
       print('[GoogleSheetsPetRepository] Error checking write permission: $e');
       return false;
+    }
+  }
+
+  /// Find an existing spreadsheet with the specified title on Google Drive
+  Future<String?> findExistingSpreadsheet(String title) async {
+    try {
+      final client = await _getAuthClient();
+      if (client == null) return null;
+
+      final driveApi = drive.DriveApi(client);
+      final list = await driveApi.files.list(
+        q: "name = '$title' and mimeType = 'application/vnd.google-apps.spreadsheet' and trashed = false",
+        spaces: 'drive',
+        $fields: 'files(id, name)',
+      );
+
+      final files = list.files;
+      if (files != null && files.isNotEmpty) {
+        // Return the first matching spreadsheet ID
+        return files.first.id;
+      }
+      return null;
+    } catch (e) {
+      print('[GoogleSheetsPetRepository] Error searching for spreadsheet: $e');
+      return null;
     }
   }
 

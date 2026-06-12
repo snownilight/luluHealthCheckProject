@@ -257,13 +257,13 @@ class HomeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 9),
                       Expanded(
-                        child: const _StatGridCard(
+                        child: _StatGridCard(
                           title: '活動',
-                          value: '38分',
-                          status: '活躍',
-                          backgroundColor: Color(0xFFE6F7EA),
-                          titleColor: Color(0xFF39845C),
-                          statusColor: Color(0xFF7B6759),
+                          value: '${status.todayActivityMin.toStringAsFixed(0)}分',
+                          status: status.todayActivityMin >= 30 ? '活躍' : '偏低',
+                          backgroundColor: const Color(0xFFE6F7EA),
+                          titleColor: const Color(0xFF39845C),
+                          statusColor: const Color(0xFF7B6759),
                         ),
                       ),
                     ],
@@ -565,11 +565,24 @@ class _CareTimelineList extends ConsumerWidget {
 
     return logsAsync.when(
       data: (logs) {
-        if (logs.isEmpty) {
-          return const _DefaultCareTimeline();
+        final now = DateTime.now();
+        final startOfToday = DateTime(now.year, now.month, now.day);
+        final endOfToday = startOfToday.add(const Duration(days: 1));
+
+        final todayLogs = logs.where((log) {
+          final timestampStr = log['eventTimestamp'] ?? '';
+          final timestamp = DateTime.tryParse(timestampStr)?.toLocal();
+          if (timestamp == null) return false;
+          return timestamp.isAtSameMomentAs(startOfToday) ||
+              (timestamp.isAfter(startOfToday) && timestamp.isBefore(endOfToday));
+        }).toList();
+
+        if (todayLogs.isEmpty) {
+          return const _EmptyCareTimeline();
         }
-        // Show the latest 5 logs
-        final displayLogs = logs.take(5).toList();
+
+        // Show the latest 5 logs of today
+        final displayLogs = todayLogs.take(5).toList();
         return Column(
           children: List.generate(displayLogs.length, (index) {
             final log = displayLogs[index];
@@ -578,7 +591,7 @@ class _CareTimelineList extends ConsumerWidget {
             final unit = log['unit'] ?? '';
             final note = log['note'] ?? '';
             final timestampStr = log['eventTimestamp'] ?? '';
-            final timestamp = DateTime.tryParse(timestampStr) ?? DateTime.now();
+            final timestamp = DateTime.tryParse(timestampStr)?.toLocal() ?? DateTime.now();
             final formattedTime = '${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}';
 
             // Translate type
@@ -636,30 +649,63 @@ class _CareTimelineList extends ConsumerWidget {
           ),
         ),
       ),
-      error: (err, stack) => const _DefaultCareTimeline(),
+      error: (err, stack) => const _EmptyCareTimeline(),
     );
   }
 }
 
-class _DefaultCareTimeline extends StatelessWidget {
-  const _DefaultCareTimeline();
+class _EmptyCareTimeline extends StatelessWidget {
+  const _EmptyCareTimeline();
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        _TimelineItem(
-          time: '07:45',
-          title: '晨間散步',
-          description: '38 分鐘，精神很好',
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF261D1A) : Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFFFE9D6),
+          width: 1.5,
         ),
-        _TimelineItem(
-          time: '09:12',
-          title: '點心時間',
-          description: '吃完了 1/2 罐凍乾貓罐頭',
-          isLast: true,
-        ),
-      ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF3C2E2A) : const Color(0xFFFFF0DC),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.calendar_today_outlined,
+              color: Color(0xFFE8875C),
+              size: 28,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '今日尚未有任何紀錄',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF3A2A20),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            '點擊底部的「聯絡簿」頁面新增一筆照顧紀錄吧！',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              color: isDark ? Colors.grey[400] : const Color(0xFF8A7566),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

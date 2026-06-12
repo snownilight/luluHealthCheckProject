@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../repositories/pet_repository.dart';
 import '../repositories/local_pet_repository.dart';
 import '../repositories/google_sheets_pet_repository.dart';
@@ -150,4 +151,61 @@ final petRepositoryProvider = Provider<PetRepository>((ref) {
     case StorageMode.server:
       return ref.read(serverPetRepositoryProvider);
   }
+});
+
+class GoogleUserNotifier extends StateNotifier<GoogleSignInAccount?> {
+  final Ref _ref;
+  GoogleUserNotifier(this._ref) : super(null) {
+    state = _ref.read(googleSheetsPetRepositoryProvider).currentUser;
+  }
+
+  Future<GoogleSignInAccount?> checkSilentSignIn() async {
+    final googleRepo = _ref.read(googleSheetsPetRepositoryProvider);
+    final user = await googleRepo.signInSilently();
+    state = user;
+    if (user != null) {
+      await _autoLinkExistingSheet();
+    }
+    return user;
+  }
+
+  Future<GoogleSignInAccount?> signIn() async {
+    final googleRepo = _ref.read(googleSheetsPetRepositoryProvider);
+    final user = await googleRepo.signIn();
+    state = user;
+    if (user != null) {
+      await _autoLinkExistingSheet();
+    }
+    return user;
+  }
+
+  Future<void> signOut() async {
+    final googleRepo = _ref.read(googleSheetsPetRepositoryProvider);
+    await googleRepo.signOut();
+    state = null;
+  }
+
+  Future<void> _autoLinkExistingSheet() async {
+    try {
+      final settings = _ref.read(storageSettingsProvider);
+      if (settings.spreadsheetId == null) {
+        final title = settings.spreadsheetTitle ?? 'MyPetHealth';
+        final googleRepo = _ref.read(googleSheetsPetRepositoryProvider);
+        final existingId = await googleRepo.findExistingSpreadsheet(title);
+        if (existingId != null) {
+          print('[GoogleUserNotifier] Auto-linking existing spreadsheet found on Google Drive: $existingId');
+          await _ref.read(storageSettingsProvider.notifier).setSpreadsheetId(existingId);
+          await _ref.read(storageSettingsProvider.notifier).setStorageMode(StorageMode.googleSheets);
+          await _ref.read(storageSettingsProvider.notifier).setConfigured(true);
+        }
+      }
+    } catch (e) {
+      print('[GoogleUserNotifier] Error during auto-linking existing sheet: $e');
+    }
+  }
+}
+
+final googleUserProvider =
+    StateNotifierProvider<GoogleUserNotifier, GoogleSignInAccount?>((ref) {
+  return GoogleUserNotifier(ref);
 });

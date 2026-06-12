@@ -8,6 +8,7 @@
 ---
 
 ## 🟢 Completed Tasks
+* `PET-046` (Done): Implemented timezone-aware daily statistics aggregation in `PetStatusNotifier` based on the user's local timezone (00:00:00 - 23:59:59). Restricted the homepage care timeline to display only logs from today, and designed a Cozy Warm Cream style empty placeholder `_EmptyCareTimeline`. Optimized the Google Sheets login flow by introducing `_GoogleReauthScreen` for re-authenticating sessions on reload, and upgraded user privacy by restricting Google Sign-In scopes to `drive.file`.
 * `PET-045` (Done): Fixed Riverpod reactivity bug by adding a watch on `storageSettingsProvider` inside `careLogsProvider`. Added `ref.listen` on storage settings in `TimelineScreen` and `TrendsScreen` to trigger instant refetches when users switch storage modes or link sheets. Increased homepage timeline limit to 5 logs.
 * `PET-044` (Done): Resolved `sqlite3.wasm` version mismatch producing `LinkError: WebAssembly.instantiate()` by downloading matching precompiled sqlite3 v2.4.5 wasm. Configured Google OAuth client-id and enabled People API, successfully verifying end-to-end Google Sheets creation and cloud synchronization.
 * `PET-040` (Done): Backend compatibility verification & Refactored frontend screens (`timeline_screen.dart`, `trends_screen.dart`) and providers to interact through the unified `petRepositoryProvider` contract instead of hardcoded REST URLs.

@@ -52,7 +52,7 @@ class _StorageSetupScreenState extends ConsumerState<StorageSetupScreen> {
     _showLoading('正在登入 Google 帳號...');
     try {
       final googleRepo = ref.read(googleSheetsPetRepositoryProvider);
-      final account = await googleRepo.signIn();
+      final account = await ref.read(googleUserProvider.notifier).signIn();
       if (account == null) {
         _hideLoading();
         if (mounted) {
@@ -203,7 +203,7 @@ class _StorageSetupScreenState extends ConsumerState<StorageSetupScreen> {
                     _showLoading('正在登入 Google 帳號...');
                     try {
                       final googleRepo = ref.read(googleSheetsPetRepositoryProvider);
-                      final account = await googleRepo.signIn();
+                      final account = await ref.read(googleUserProvider.notifier).signIn();
                       if (account == null) {
                         _hideLoading();
                         if (mounted) {

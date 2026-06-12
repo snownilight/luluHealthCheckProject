@@ -22,11 +22,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _titleController = TextEditingController(text: settings.spreadsheetTitle ?? 'MyPetHealth');
 
     // Attempt silent sign-in to restore credentials if using Google Sheets
-    final googleRepo = ref.read(googleSheetsPetRepositoryProvider);
-    if (settings.mode == StorageMode.googleSheets && googleRepo.currentUser == null) {
-      googleRepo.signIn().then((_) {
-        if (mounted) setState(() {});
-      });
+    if (settings.mode == StorageMode.googleSheets && ref.read(googleUserProvider) == null) {
+      ref.read(googleUserProvider.notifier).checkSilentSignIn();
     }
   }
 
@@ -81,8 +78,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final settings = ref.watch(storageSettingsProvider);
-    final googleRepo = ref.watch(googleSheetsPetRepositoryProvider);
-    final googleUser = googleRepo.currentUser;
+    final googleUser = ref.watch(googleUserProvider);
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF161210) : const Color(0xFFFFFDFB),
@@ -245,14 +241,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           trailing: TextButton(
                             onPressed: () async {
                               if (googleUser != null) {
-                                await googleRepo.signOut();
+                                await ref.read(googleUserProvider.notifier).signOut();
                                 ref.invalidate(careLogsProvider);
                                 ref.read(petStatusProvider.notifier).refreshStatus();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('已登出 Google 帳號。')),
                                 );
                               } else {
-                                final account = await googleRepo.signIn();
+                                final account = await ref.read(googleUserProvider.notifier).signIn();
                                 if (account != null) {
                                   ref.invalidate(careLogsProvider);
                                   ref.read(petStatusProvider.notifier).refreshStatus();
@@ -261,7 +257,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                   );
                                 }
                               }
-                              setState(() {});
                             },
                             child: Text(
                               googleUser != null ? '登出' : '登入',

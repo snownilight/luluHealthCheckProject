@@ -1034,22 +1034,142 @@ typedef $$CareLogsTableUpdateCompanionBuilder = CareLogsCompanion Function({
   Value<DateTime> createdAt,
 });
 
+class $$CareLogsTableFilterComposer
+    extends Composer<_$LocalDatabase, $CareLogsTable> {
+  $$CareLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get eventId => $composableBuilder(
+      column: $table.eventId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get eventType => $composableBuilder(
+      column: $table.eventType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get operatorName => $composableBuilder(
+      column: $table.operatorName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get value => $composableBuilder(
+      column: $table.value, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get unit => $composableBuilder(
+      column: $table.unit, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get eventTimestamp => $composableBuilder(
+      column: $table.eventTimestamp,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$CareLogsTableOrderingComposer
+    extends Composer<_$LocalDatabase, $CareLogsTable> {
+  $$CareLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get eventId => $composableBuilder(
+      column: $table.eventId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get eventType => $composableBuilder(
+      column: $table.eventType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get operatorName => $composableBuilder(
+      column: $table.operatorName,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get value => $composableBuilder(
+      column: $table.value, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+      column: $table.unit, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get note => $composableBuilder(
+      column: $table.note, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get eventTimestamp => $composableBuilder(
+      column: $table.eventTimestamp,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$CareLogsTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $CareLogsTable> {
+  $$CareLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get eventId =>
+      $composableBuilder(column: $table.eventId, builder: (column) => column);
+
+  GeneratedColumn<String> get eventType =>
+      $composableBuilder(column: $table.eventType, builder: (column) => column);
+
+  GeneratedColumn<String> get operatorName => $composableBuilder(
+      column: $table.operatorName, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get eventTimestamp => $composableBuilder(
+      column: $table.eventTimestamp, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
 class $$CareLogsTableTableManager extends RootTableManager<
     _$LocalDatabase,
     $CareLogsTable,
     CareLog,
     $$CareLogsTableFilterComposer,
     $$CareLogsTableOrderingComposer,
+    $$CareLogsTableAnnotationComposer,
     $$CareLogsTableCreateCompanionBuilder,
-    $$CareLogsTableUpdateCompanionBuilder> {
+    $$CareLogsTableUpdateCompanionBuilder,
+    (CareLog, BaseReferences<_$LocalDatabase, $CareLogsTable, CareLog>),
+    CareLog,
+    PrefetchHooks Function()> {
   $$CareLogsTableTableManager(_$LocalDatabase db, $CareLogsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$CareLogsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$CareLogsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$CareLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CareLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CareLogsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> eventId = const Value.absent(),
@@ -1094,107 +1214,25 @@ class $$CareLogsTableTableManager extends RootTableManager<
             eventTimestamp: eventTimestamp,
             createdAt: createdAt,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$CareLogsTableFilterComposer
-    extends FilterComposer<_$LocalDatabase, $CareLogsTable> {
-  $$CareLogsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get eventId => $state.composableBuilder(
-      column: $state.table.eventId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get eventType => $state.composableBuilder(
-      column: $state.table.eventType,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get operatorName => $state.composableBuilder(
-      column: $state.table.operatorName,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<double> get value => $state.composableBuilder(
-      column: $state.table.value,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get unit => $state.composableBuilder(
-      column: $state.table.unit,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get note => $state.composableBuilder(
-      column: $state.table.note,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get eventTimestamp => $state.composableBuilder(
-      column: $state.table.eventTimestamp,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
-      column: $state.table.createdAt,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$CareLogsTableOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, $CareLogsTable> {
-  $$CareLogsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get eventId => $state.composableBuilder(
-      column: $state.table.eventId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get eventType => $state.composableBuilder(
-      column: $state.table.eventType,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get operatorName => $state.composableBuilder(
-      column: $state.table.operatorName,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<double> get value => $state.composableBuilder(
-      column: $state.table.value,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get unit => $state.composableBuilder(
-      column: $state.table.unit,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get note => $state.composableBuilder(
-      column: $state.table.note,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get eventTimestamp => $state.composableBuilder(
-      column: $state.table.eventTimestamp,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
-      column: $state.table.createdAt,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
+typedef $$CareLogsTableProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    $CareLogsTable,
+    CareLog,
+    $$CareLogsTableFilterComposer,
+    $$CareLogsTableOrderingComposer,
+    $$CareLogsTableAnnotationComposer,
+    $$CareLogsTableCreateCompanionBuilder,
+    $$CareLogsTableUpdateCompanionBuilder,
+    (CareLog, BaseReferences<_$LocalDatabase, $CareLogsTable, CareLog>),
+    CareLog,
+    PrefetchHooks Function()>;
 typedef $$WeightLogsTableCreateCompanionBuilder = WeightLogsCompanion Function({
   Value<int> id,
   required double weightKg,
@@ -1206,22 +1244,85 @@ typedef $$WeightLogsTableUpdateCompanionBuilder = WeightLogsCompanion Function({
   Value<DateTime> recordedAt,
 });
 
+class $$WeightLogsTableFilterComposer
+    extends Composer<_$LocalDatabase, $WeightLogsTable> {
+  $$WeightLogsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+      column: $table.weightKg, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get recordedAt => $composableBuilder(
+      column: $table.recordedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$WeightLogsTableOrderingComposer
+    extends Composer<_$LocalDatabase, $WeightLogsTable> {
+  $$WeightLogsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+      column: $table.weightKg, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get recordedAt => $composableBuilder(
+      column: $table.recordedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$WeightLogsTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $WeightLogsTable> {
+  $$WeightLogsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get recordedAt => $composableBuilder(
+      column: $table.recordedAt, builder: (column) => column);
+}
+
 class $$WeightLogsTableTableManager extends RootTableManager<
     _$LocalDatabase,
     $WeightLogsTable,
     WeightLog,
     $$WeightLogsTableFilterComposer,
     $$WeightLogsTableOrderingComposer,
+    $$WeightLogsTableAnnotationComposer,
     $$WeightLogsTableCreateCompanionBuilder,
-    $$WeightLogsTableUpdateCompanionBuilder> {
+    $$WeightLogsTableUpdateCompanionBuilder,
+    (WeightLog, BaseReferences<_$LocalDatabase, $WeightLogsTable, WeightLog>),
+    WeightLog,
+    PrefetchHooks Function()> {
   $$WeightLogsTableTableManager(_$LocalDatabase db, $WeightLogsTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$WeightLogsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$WeightLogsTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$WeightLogsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeightLogsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeightLogsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<double> weightKg = const Value.absent(),
@@ -1242,47 +1343,25 @@ class $$WeightLogsTableTableManager extends RootTableManager<
             weightKg: weightKg,
             recordedAt: recordedAt,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$WeightLogsTableFilterComposer
-    extends FilterComposer<_$LocalDatabase, $WeightLogsTable> {
-  $$WeightLogsTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<double> get weightKg => $state.composableBuilder(
-      column: $state.table.weightKg,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get recordedAt => $state.composableBuilder(
-      column: $state.table.recordedAt,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$WeightLogsTableOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, $WeightLogsTable> {
-  $$WeightLogsTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<double> get weightKg => $state.composableBuilder(
-      column: $state.table.weightKg,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get recordedAt => $state.composableBuilder(
-      column: $state.table.recordedAt,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
+typedef $$WeightLogsTableProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    $WeightLogsTable,
+    WeightLog,
+    $$WeightLogsTableFilterComposer,
+    $$WeightLogsTableOrderingComposer,
+    $$WeightLogsTableAnnotationComposer,
+    $$WeightLogsTableCreateCompanionBuilder,
+    $$WeightLogsTableUpdateCompanionBuilder,
+    (WeightLog, BaseReferences<_$LocalDatabase, $WeightLogsTable, WeightLog>),
+    WeightLog,
+    PrefetchHooks Function()>;
 typedef $$DailySummariesTableCreateCompanionBuilder = DailySummariesCompanion
     Function({
   Value<int> id,
@@ -1300,23 +1379,113 @@ typedef $$DailySummariesTableUpdateCompanionBuilder = DailySummariesCompanion
   Value<double> averageWeightKg,
 });
 
+class $$DailySummariesTableFilterComposer
+    extends Composer<_$LocalDatabase, $DailySummariesTable> {
+  $$DailySummariesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get totalWaterIntakeMl => $composableBuilder(
+      column: $table.totalWaterIntakeMl,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get totalFoodIntakeG => $composableBuilder(
+      column: $table.totalFoodIntakeG,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get averageWeightKg => $composableBuilder(
+      column: $table.averageWeightKg,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$DailySummariesTableOrderingComposer
+    extends Composer<_$LocalDatabase, $DailySummariesTable> {
+  $$DailySummariesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get totalWaterIntakeMl => $composableBuilder(
+      column: $table.totalWaterIntakeMl,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get totalFoodIntakeG => $composableBuilder(
+      column: $table.totalFoodIntakeG,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get averageWeightKg => $composableBuilder(
+      column: $table.averageWeightKg,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$DailySummariesTableAnnotationComposer
+    extends Composer<_$LocalDatabase, $DailySummariesTable> {
+  $$DailySummariesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<double> get totalWaterIntakeMl => $composableBuilder(
+      column: $table.totalWaterIntakeMl, builder: (column) => column);
+
+  GeneratedColumn<double> get totalFoodIntakeG => $composableBuilder(
+      column: $table.totalFoodIntakeG, builder: (column) => column);
+
+  GeneratedColumn<double> get averageWeightKg => $composableBuilder(
+      column: $table.averageWeightKg, builder: (column) => column);
+}
+
 class $$DailySummariesTableTableManager extends RootTableManager<
     _$LocalDatabase,
     $DailySummariesTable,
     DailySummary,
     $$DailySummariesTableFilterComposer,
     $$DailySummariesTableOrderingComposer,
+    $$DailySummariesTableAnnotationComposer,
     $$DailySummariesTableCreateCompanionBuilder,
-    $$DailySummariesTableUpdateCompanionBuilder> {
+    $$DailySummariesTableUpdateCompanionBuilder,
+    (
+      DailySummary,
+      BaseReferences<_$LocalDatabase, $DailySummariesTable, DailySummary>
+    ),
+    DailySummary,
+    PrefetchHooks Function()> {
   $$DailySummariesTableTableManager(
       _$LocalDatabase db, $DailySummariesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$DailySummariesTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$DailySummariesTableOrderingComposer(ComposerState(db, table)),
+          createFilteringComposer: () =>
+              $$DailySummariesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailySummariesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailySummariesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
@@ -1345,66 +1514,28 @@ class $$DailySummariesTableTableManager extends RootTableManager<
             totalFoodIntakeG: totalFoodIntakeG,
             averageWeightKg: averageWeightKg,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$DailySummariesTableFilterComposer
-    extends FilterComposer<_$LocalDatabase, $DailySummariesTable> {
-  $$DailySummariesTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<double> get totalWaterIntakeMl => $state.composableBuilder(
-      column: $state.table.totalWaterIntakeMl,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<double> get totalFoodIntakeG => $state.composableBuilder(
-      column: $state.table.totalFoodIntakeG,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<double> get averageWeightKg => $state.composableBuilder(
-      column: $state.table.averageWeightKg,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$DailySummariesTableOrderingComposer
-    extends OrderingComposer<_$LocalDatabase, $DailySummariesTable> {
-  $$DailySummariesTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<double> get totalWaterIntakeMl => $state.composableBuilder(
-      column: $state.table.totalWaterIntakeMl,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<double> get totalFoodIntakeG => $state.composableBuilder(
-      column: $state.table.totalFoodIntakeG,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<double> get averageWeightKg => $state.composableBuilder(
-      column: $state.table.averageWeightKg,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
+typedef $$DailySummariesTableProcessedTableManager = ProcessedTableManager<
+    _$LocalDatabase,
+    $DailySummariesTable,
+    DailySummary,
+    $$DailySummariesTableFilterComposer,
+    $$DailySummariesTableOrderingComposer,
+    $$DailySummariesTableAnnotationComposer,
+    $$DailySummariesTableCreateCompanionBuilder,
+    $$DailySummariesTableUpdateCompanionBuilder,
+    (
+      DailySummary,
+      BaseReferences<_$LocalDatabase, $DailySummariesTable, DailySummary>
+    ),
+    DailySummary,
+    PrefetchHooks Function()>;
 
 class $LocalDatabaseManager {
   final _$LocalDatabase _db;

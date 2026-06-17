@@ -31,7 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration," +
         "org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration," +
         "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration",
-    "spring.cache.type=none"
+    "spring.cache.type=none",
+    "spring.task.scheduling.enabled=false"
 })
 @AutoConfigureMockMvc
 @ActiveProfiles("test")

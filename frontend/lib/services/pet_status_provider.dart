@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../config/environment_config.dart';
 import '../models/pet_status.dart';
 import 'websocket_service.dart';
 import 'storage_settings_provider.dart';
@@ -102,7 +102,7 @@ final webSocketServiceProvider = Provider<WebSocketService?>((ref) {
   }
 
   final wsService = WebSocketService(
-    wsUrl: kIsWeb ? 'ws://localhost:8080/ws-pet' : 'ws://10.0.2.2:8080/ws-pet',
+    wsUrl: EnvironmentConfig.webSocketUrl,
     onStatusReceived: (status) {
       // Invalidate logs so timeline matches, then refreshStatus to compute timezone-aware stats
       ref.invalidate(careLogsProvider);

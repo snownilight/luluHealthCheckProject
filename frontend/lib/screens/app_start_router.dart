@@ -23,8 +23,10 @@ class _AppStartRouterState extends ConsumerState<AppStartRouter> {
 
   Future<void> _initializeApp() async {
     try {
-      // Check for saved Google credentials silently
-      await ref.read(googleUserProvider.notifier).checkSilentSignIn();
+      await ref
+          .read(googleUserProvider.notifier)
+          .checkSilentSignIn()
+          .timeout(const Duration(seconds: 5));
     } catch (e) {
       print('[AppStartRouter] Silent sign-in error: $e');
     } finally {
@@ -45,10 +47,8 @@ class _AppStartRouterState extends ConsumerState<AppStartRouter> {
     final settings = ref.watch(storageSettingsProvider);
     final googleUser = ref.watch(googleUserProvider);
 
-    // If Google Sheets mode is selected and was previously configured
     if (settings.isConfigured && settings.mode == StorageMode.googleSheets) {
       if (googleUser == null) {
-        // Session expired or needs authorization on reload
         return const _GoogleReauthScreen();
       } else if (settings.spreadsheetId != null) {
         return const MainLayout();
@@ -57,24 +57,18 @@ class _AppStartRouterState extends ConsumerState<AppStartRouter> {
       }
     }
 
-    // 1-1. Google login is active (e.g. during fresh onboarding setup)
     if (googleUser != null) {
       if (settings.mode == StorageMode.googleSheets && settings.spreadsheetId != null) {
-        // 1-1-1. Has Google Sheet linked, load data and show main layout
         return const MainLayout();
       } else {
-        // 1-1-2. No Google Sheet configured, guide to storage onboarding
         return const StorageSetupScreen();
       }
     }
 
-    // 1-2. Google login is NOT active
     if (settings.isConfigured && settings.mode == StorageMode.local) {
-      // User has explicitly chosen local SQLite storage offline
       return const MainLayout();
     }
 
-    // New user with no configuration and no Google session
     return const WelcomeAuthScreen();
   }
 }
@@ -153,7 +147,7 @@ class _GoogleReauthScreenState extends ConsumerState<_GoogleReauthScreen> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  '需要驗證 Google 帳戶',
+                  '需要重新連線 Google',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -162,7 +156,7 @@ class _GoogleReauthScreenState extends ConsumerState<_GoogleReauthScreen> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '您目前設定的儲存庫為 Google 試算表。為了讀取最新資料，請點擊下方按鈕以重新連結您的 Google 帳戶。',
+                  '你的雲端試算表仍已保留，但目前需要重新登入 Google 才能同步資料。',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -195,7 +189,7 @@ class _GoogleReauthScreenState extends ConsumerState<_GoogleReauthScreen> {
                           )
                         : const Icon(Icons.login_rounded),
                     label: Text(
-                      _isConnecting ? '正在連結...' : '驗證並登入 Google',
+                      _isConnecting ? '連線中...' : '重新登入 Google',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -206,12 +200,11 @@ class _GoogleReauthScreenState extends ConsumerState<_GoogleReauthScreen> {
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () async {
-                    // Reset configuration so they can choose a different storage type if they wish
                     await ref.read(storageSettingsProvider.notifier).setConfigured(false);
                     await ref.read(storageSettingsProvider.notifier).setStorageMode(StorageMode.local);
                   },
                   child: Text(
-                    '切換為其他儲存模式',
+                    '改用本機模式',
                     style: TextStyle(
                       color: isDark ? const Color(0xFFE8875C) : const Color(0xFFC86C43),
                       fontWeight: FontWeight.w600,
@@ -240,7 +233,6 @@ class _SplashLoadingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Brand Logo container
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -264,7 +256,7 @@ class _SplashLoadingScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              '正在確認登入與儲存庫狀態...',
+              '正在載入你的寵物健康資料...',
               style: TextStyle(
                 fontSize: 13,
                 color: isDark ? Colors.grey[400] : const Color(0xFF8A7566),

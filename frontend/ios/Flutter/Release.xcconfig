@@ -1,0 +1,2 @@
+#include "Generated.xcconfig"
+GOOGLE_REVERSED_CLIENT_ID=YOUR_REVERSED_CLIENT_ID

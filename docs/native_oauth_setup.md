@@ -1,67 +1,72 @@
-# 原生平台 Google OAuth 設定指南 (Android & iOS)
+# Native Google OAuth and Firebase Setup
 
-本文件說明當本專案生成原生 Android 與 iOS 目錄（例如執行 `flutter create .`）後，如何配置 Google Sign-In 金鑰與憑證。
+This project supports web, Android, and iOS Google Sign-In. Real credentials are not committed. Use the checked-in `.example` files as templates and inject public client IDs at build time.
 
----
+## Flutter build-time configuration
 
-## 1. iOS 平台設定 (Info.plist)
+Pass these values with `--dart-define` when running or building the Flutter app:
 
-在 iOS 上使用 Google Sign-In，您必須將 Google Cloud Console 產生的 **反向用戶端 ID (Reversed Client ID)** 註冊為 URL 協議。
-
-### 編輯檔案：`ios/Runner/Info.plist`
-
-請在 `<dict>` 標籤內加入以下 `CFBundleURLTypes` 配置（請將 `YOUR_REVERSED_CLIENT_ID` 替換為您從 Google Service-Info.plist 取得的實際數值）：
-
-```xml
-<key>CFBundleURLTypes</key>
-<array>
-    <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-            <!-- 貼上您的反向用戶端 ID，例如：com.googleusercontent.apps.1234567890-abcdefg -->
-            <string>YOUR_REVERSED_CLIENT_ID</string>
-        </array>
-    </dict>
-</array>
+```bash
+flutter run \
+  --dart-define=API_BASE_URL=http://localhost:8080 \
+  --dart-define=WEBSOCKET_URL=ws://localhost:8080/ws-pet \
+  --dart-define=GOOGLE_SIGN_IN_CLIENT_ID=YOUR_WEB_OAUTH_CLIENT_ID.apps.googleusercontent.com
 ```
 
----
+Defaults are still provided for local development:
 
-## 2. Android 平台設定 (Gradle & Google Services)
+- Web API: `http://localhost:8080`
+- Android emulator API: `http://10.0.2.2:8080`
+- Web WebSocket: `ws://localhost:8080/ws-pet`
+- Android emulator WebSocket: `ws://10.0.2.2:8080/ws-pet`
 
-在 Android 上，Google Sign-In 需要依賴 Google Play Services。
+## Android
 
-### 步驟 A：取得 SHA-1 指紋與設定 Firebase / Google Cloud
-1. 執行以下指令以取得您本地開發金鑰的 SHA-1 指紋：
-   ```bash
-   keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
-   ```
-2. 將取得的 SHA-1 指紋填入 Google Cloud Console / Firebase 專案設定中。
-3. 下載 `google-services.json` 檔案，並將其放置於：
-   `android/app/google-services.json`
+1. Create an Android OAuth client in Google Cloud Console or Firebase.
+2. Add the debug/release SHA-1 fingerprints for the Android app.
+3. Download `google-services.json`.
+4. Copy it to:
 
-### 步驟 B：編輯專案根目錄 Gradle 檔 (`android/build.gradle`)
-確保 `buildscript` 依賴中包含 Google Services 插件：
-
-```gradle
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        // 加入以下這一行
-        classpath 'com.google.gms:google-services:4.3.15'
-    }
-}
+```text
+frontend/android/app/google-services.json
 ```
 
-### 步驟 C：編輯 App 目錄 Gradle 檔 (`android/app/build.gradle`)
-在檔案最底部套用 Google Services 插件：
+Use [frontend/android/app/google-services.json.example](../frontend/android/app/google-services.json.example) as a shape reference. The real file is ignored by git.
 
-```gradle
-// 套用 Flutter 插件之後，在最底部加上這一行
-apply plugin: 'com.google.gms.google-services'
+The Google Services Gradle plugin is configured in `frontend/android/settings.gradle.kts` and is applied only when `google-services.json` exists, so local builds without secrets still work.
+
+## iOS
+
+1. Create an iOS OAuth client in Google Cloud Console or Firebase.
+2. Download `GoogleService-Info.plist`.
+3. Copy it to:
+
+```text
+frontend/ios/Runner/GoogleService-Info.plist
+```
+
+Use [frontend/ios/Runner/GoogleService-Info.plist.example](../frontend/ios/Runner/GoogleService-Info.plist.example) as a shape reference. The real file is ignored by git.
+
+Set the reversed client ID in both xcconfig files before native iOS builds:
+
+```text
+GOOGLE_REVERSED_CLIENT_ID=com.googleusercontent.apps.YOUR_IOS_OAUTH_CLIENT_ID
+```
+
+The value is consumed by `frontend/ios/Runner/Info.plist` through `CFBundleURLTypes`.
+
+## Backend Firebase Admin
+
+The backend defaults to Firebase mock mode for local development and tests:
+
+```properties
+app.firebase.mock-enabled=${FIREBASE_MOCK_ENABLED:true}
+app.firebase.config-path=${FIREBASE_CONFIG_PATH:classpath:firebase-service-account.json}
+```
+
+For real FCM notifications, copy [backend/src/main/resources/firebase-service-account.json.example](../backend/src/main/resources/firebase-service-account.json.example) to `backend/src/main/resources/firebase-service-account.json`, or point `FIREBASE_CONFIG_PATH` at a secure external location, then run with:
+
+```bash
+FIREBASE_MOCK_ENABLED=false
+FIREBASE_CONFIG_PATH=file:/absolute/path/firebase-service-account.json
 ```

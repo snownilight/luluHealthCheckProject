@@ -12,7 +12,6 @@ class TrendsScreen extends ConsumerStatefulWidget {
 }
 
 class _TrendsScreenState extends ConsumerState<TrendsScreen> {
-  bool _isLoading = false;
   List<Map<String, dynamic>> _weightLogs = [];
   List<Map<String, dynamic>> _dailySummaries = [];
 
@@ -79,10 +78,6 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
   }
 
   Future<void> _fetchTrendData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
     try {
       final repository = ref.read(petRepositoryProvider);
       final weightData = await repository.getWeeklyWeightTrend();
@@ -94,10 +89,6 @@ class _TrendsScreenState extends ConsumerState<TrendsScreen> {
       });
     } catch (e) {
       print('Error fetching charts/trends data: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 

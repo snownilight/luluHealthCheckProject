@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -98,6 +99,65 @@ public class CareLogControllerTest {
                         org.hamcrest.Matchers.containsString("operator"),
                         org.hamcrest.Matchers.containsString("value")
                 )));
+    }
+
+    @Test
+    public void testCreateCareLog_BlankOperatorWithWhitespaceOnly() throws Exception {
+        CareLogRequest request = CareLogRequest.builder()
+                .eventType(EventType.DRINKING)
+                .operator("   ")
+                .value(1.0)
+                .unit("ml")
+                .build();
+
+        mockMvc.perform(post("/api/v1/care-logs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("operator")));
+
+        verify(careLogPersistenceService, never()).persistSingle(any());
+    }
+
+    @Test
+    public void testCreateCareLog_ZeroValueRejected() throws Exception {
+        CareLogRequest request = CareLogRequest.builder()
+                .eventType(EventType.FEEDING)
+                .operator("Tester")
+                .value(0.0)
+                .unit("g")
+                .build();
+
+        mockMvc.perform(post("/api/v1/care-logs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("value")));
+
+        verify(careLogPersistenceService, never()).persistSingle(any());
+    }
+
+    @Test
+    public void testCreateCareLog_UnknownEventTypeRejectedAsBadRequest() throws Exception {
+        String body = """
+                {
+                  "eventType": "UNKNOWN_EVENT",
+                  "operator": "Tester",
+                  "value": 1.0,
+                  "unit": "g"
+                }
+                """;
+
+        mockMvc.perform(post("/api/v1/care-logs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value("Malformed request body"));
+
+        verify(careLogPersistenceService, never()).persistSingle(any());
     }
 
     @Test

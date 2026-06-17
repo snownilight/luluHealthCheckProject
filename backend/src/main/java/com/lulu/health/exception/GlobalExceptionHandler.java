@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import jakarta.validation.ConstraintViolationException;
@@ -41,6 +42,12 @@ public class GlobalExceptionHandler {
         // 利用 var 關鍵字與 iterator 直接拿取第一個驗證錯誤
         var violation = ex.getConstraintViolations().iterator().next();
         return ApiResponse.error(400, violation.getPropertyPath() + ": " + violation.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<String> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        return ApiResponse.error(400, "Malformed request body");
     }
 
     @ExceptionHandler(Exception.class)

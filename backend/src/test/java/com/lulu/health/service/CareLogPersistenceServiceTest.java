@@ -106,6 +106,64 @@ public class CareLogPersistenceServiceTest {
     }
 
     @Test
+    public void testPersistBatch_SeparatesSummariesAcrossMidnight() {
+        LocalDate firstDate = LocalDate.of(2026, 6, 1);
+        LocalDate secondDate = LocalDate.of(2026, 6, 2);
+        LocalDateTime firstTimestamp = firstDate.atTime(23, 59);
+        LocalDateTime secondTimestamp = secondDate.atStartOfDay();
+
+        CareLog waterBeforeMidnight = CareLog.builder()
+                .eventId("water-before-midnight")
+                .eventType(EventType.DRINKING)
+                .value(100.0)
+                .eventTimestamp(firstTimestamp)
+                .build();
+        CareLog foodAtMidnight = CareLog.builder()
+                .eventId("food-at-midnight")
+                .eventType(EventType.FEEDING)
+                .value(40.0)
+                .eventTimestamp(secondTimestamp)
+                .build();
+
+        when(careLogMapper.findByTimestampRange(firstDate.atStartOfDay(), secondDate.atStartOfDay()))
+                .thenReturn(Collections.singletonList(waterBeforeMidnight));
+        when(careLogMapper.findByTimestampRange(secondDate.atStartOfDay(), secondDate.plusDays(1).atStartOfDay()))
+                .thenReturn(Collections.singletonList(foodAtMidnight));
+        when(weightLogMapper.findByRecordedAtRange(any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Collections.emptyList());
+        when(dailyHealthSummaryMapper.findByDate(firstDate)).thenReturn(null);
+        when(dailyHealthSummaryMapper.findByDate(secondDate)).thenReturn(null);
+
+        persistenceService.persistBatch(List.of(waterBeforeMidnight, foodAtMidnight));
+
+        verify(dailyHealthSummaryMapper).insert(argThat(summary ->
+                summary.getDate().equals(firstDate) &&
+                summary.getTotalWaterIntakeMl() == 100.0 &&
+                summary.getTotalFoodIntakeG() == 0.0
+        ));
+        verify(dailyHealthSummaryMapper).insert(argThat(summary ->
+                summary.getDate().equals(secondDate) &&
+                summary.getTotalWaterIntakeMl() == 0.0 &&
+                summary.getTotalFoodIntakeG() == 40.0
+        ));
+    }
+
+    @Test
+    public void testPersistBatch_NullTimestampPersistsCareLogButSkipsSummaryUpdate() {
+        CareLog noTimestamp = CareLog.builder()
+                .eventId("no-timestamp")
+                .eventType(EventType.DRINKING)
+                .value(100.0)
+                .eventTimestamp(null)
+                .build();
+
+        persistenceService.persistBatch(Collections.singletonList(noTimestamp));
+
+        verify(careLogMapper).insert(noTimestamp);
+        verifyNoInteractions(weightLogMapper, dailyHealthSummaryMapper);
+    }
+
+    @Test
     public void testPersistBatch_DbErrorRollback() {
         CareLog logEntry = CareLog.builder()
                 .eventId("event-1")

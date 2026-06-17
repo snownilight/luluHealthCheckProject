@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../config/environment_config.dart';
 import '../models/pet_status.dart';
 import 'storage_settings_provider.dart';
 
 final apiServiceProvider = Provider((ref) => ApiService(
-  baseUrl: kIsWeb ? 'http://localhost:8080' : 'http://10.0.2.2:8080',
+  baseUrl: EnvironmentConfig.apiBaseUrl,
 ));
 
 class ApiService {

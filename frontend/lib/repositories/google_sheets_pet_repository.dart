@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/sheets/v4.dart' as sheets;
 import 'package:googleapis/drive/v3.dart' as drive;
+import '../config/environment_config.dart';
 import '../models/pet_status.dart';
 import 'pet_repository.dart';
 
@@ -21,6 +22,7 @@ class AuthClient extends http.BaseClient {
 
 class GoogleSheetsPetRepository implements PetRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId: EnvironmentConfig.optionalGoogleSignInClientId,
     scopes: [
       'email',
       'https://www.googleapis.com/auth/drive.file', // 🔒 僅能讀寫本 App 建立的檔案

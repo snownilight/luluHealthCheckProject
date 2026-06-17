@@ -49,6 +49,8 @@ class LocalDatabase extends _$LocalDatabase {
           ),
         );
 
+  LocalDatabase.forTesting(QueryExecutor executor) : super(executor);
+
   @override
   int get schemaVersion => 1;
 }

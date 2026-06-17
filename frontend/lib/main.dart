@@ -20,7 +20,7 @@ class PetHealthApp extends ConsumerWidget {
       title: '智慧成長觀測站',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light, // Keep cozy warm cream theme consistent on all systems
+      themeMode: ThemeMode.light,
       home: const AppStartRouter(),
       debugShowCheckedModeBanner: false,
     );

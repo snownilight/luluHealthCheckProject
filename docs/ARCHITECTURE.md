@@ -1,125 +1,137 @@
-# 系統架構設計文件 (System Architecture)
+# Pet Health Tracker - System Architecture
 
-本文件說明「寵物防禦性照顧健康防線系統 (Pet Health Check Project)」的架構、數據流、基礎建設配置與即時通知機制。
+This project is a pet health tracking application with a Flutter client and a Spring Boot backend. The current architecture supports three storage modes from the frontend:
 
----
+- Local device storage with Drift / SQLite.
+- Cloud synchronization through Google Sheets and Google Drive APIs.
+- Server mode through the Spring Boot REST and WebSocket backend.
 
-## 1. 架構概述 (Architecture Overview)
-
-本系統為**事件驅動 (Event-driven)** 及**即時同步 (Real-time sync)** 的三層架構：
-
-1. **客戶端 (Clients)**：包含 Flutter App (二姐及家人照護端) 以及智慧餵食器/飲水器 (IoT 設備)。
-2. **後端 API 服務 (Spring Boot 3)**：
-   - 提供 RESTful 端點以接收手動記錄與 IoT 遙測數據。
-   - 整合 Apache Kafka 進行事件解耦與順序保證。
-   - 整合 Redis 儲存即時狀態，並利用 Key TTL 觸發逾時未進食/未飲水之防禦性告警。
-   - 提供 WebSocket (STOMP) 服務以向 App 推送最新的即時狀態。
-   - 整合 Caffeine 快取歷史靜態與長週期數據，加快讀取速度。
-3. **持久層 (MariaDB)**：存放歷史日誌、體重記錄等結構化數據。
+Earlier versions used Kafka and Redis for event ingestion and state timers. Those pieces have been removed from the active runtime and are now considered historical architecture.
 
 ---
 
-## 2. 數據流向與事件管道 (Data Flow & Events)
+## 1. High-Level Overview
+
+```mermaid
+flowchart LR
+    Flutter["Flutter App"] --> Repo["PetRepository Interface"]
+    Repo --> Local["LocalPetRepository\nDrift / SQLite"]
+    Repo --> Sheets["GoogleSheetsPetRepository\nSheets + Drive APIs"]
+    Repo --> Server["ServerPetRepository\nREST + WebSocket"]
+    Server --> API["Spring Boot API"]
+    API --> DB["MariaDB"]
+    API --> WS["STOMP WebSocket\n/topic/status"]
+    API --> FCM["Firebase Cloud Messaging\noptional alerts"]
+```
+
+The frontend selects the active repository through `storageSettingsProvider`. UI screens read and write through the shared `PetRepository` contract instead of directly depending on one storage implementation.
+
+---
+
+## 2. Frontend Architecture
+
+### Flutter stack
+
+- Flutter 3 / Dart 3.
+- Riverpod for state management.
+- Drift and sqlite3 for offline local storage.
+- Google Sign-In, Google Sheets API, and Google Drive API for cloud storage.
+- HTTP and STOMP WebSocket clients for server mode.
+- `fl_chart` for health trend visualizations.
+
+### Main frontend modules
+
+- `lib/repositories/pet_repository.dart`: shared data contract.
+- `lib/repositories/local_pet_repository.dart`: local SQLite implementation.
+- `lib/repositories/google_sheets_pet_repository.dart`: Google Sheets implementation.
+- `lib/repositories/server_pet_repository.dart`: backend API implementation.
+- `lib/services/storage_settings_provider.dart`: active storage mode and Google account state.
+- `lib/services/pet_status_provider.dart`: current dashboard status aggregation.
+- `lib/screens/app_start_router.dart`: startup routing for onboarding, local mode, Google re-auth, and main app.
+
+### Storage modes
+
+| Mode | Purpose | Storage |
+| --- | --- | --- |
+| `local` | Offline-first personal use | Drift / SQLite on device |
+| `googleSheets` | Family sharing and cloud sync | Google Sheets workbook |
+| `server` | Backend-driven operation | Spring Boot + MariaDB |
+
+---
+
+## 3. Backend Architecture
+
+### Backend stack
+
+- Java 21.
+- Spring Boot 3.2.5.
+- MyBatis XML mappers.
+- MariaDB.
+- Caffeine cache.
+- STOMP WebSocket.
+- Firebase Admin SDK for optional FCM notifications.
+
+### Main backend modules
+
+- `CareLogController`: REST endpoints for care logs and current pet status.
+- `CareLogPersistenceService`: synchronous persistence and daily summary updates.
+- `HealthTrendController` / `HealthTrendService`: trend endpoints backed by MyBatis queries and Caffeine caching.
+- `DehydrationAlertScheduler`: scheduled database-driven alert checks.
+- `NotificationService`: FCM integration with mock fallback behavior.
+- `WebSocketConfig`: STOMP endpoint `/ws-pet` and broker topic `/topic/status`.
+
+---
+
+## 4. Active Data Flow
+
+### Saving a care log in server mode
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Family as 二姐 / 家族成員
+    actor User
     participant Flutter as Flutter App
+    participant Repo as ServerPetRepository
     participant API as Spring Boot API
-    participant Kafka as Kafka (pet-events)
-    participant Consumer as Kafka Consumer
-    participant Redis as Redis State & TTL
     participant DB as MariaDB
+    participant WS as WebSocket Topic
 
-    Family ->> Flutter: 手動新增餵食紀錄 (150g)
-    Flutter ->> API: POST /api/v1/care-logs (JSON Payload)
-    API ->> Kafka: 發送 Event (EventType=FEEDING)
-    API -->> Flutter: 回傳 HTTP 202 Accepted (極速回應)
-    
-    Note over Kafka, Consumer: 非同步事件串流與順序保證
-    Kafka ->> Consumer: 消費事件
-    Consumer ->> Redis: 更新當日進食總量 / 重設進食 TTL 定時器
-    Consumer ->> DB: 批次非同步寫入 care_logs
-    Consumer ->> Flutter: 透過 WebSocket 廣播最新狀態 (即時畫面跳動)
+    User->>Flutter: Add feeding / drinking / weight / activity log
+    Flutter->>Repo: saveCareLog(data)
+    Repo->>API: POST /api/v1/care-logs
+    API->>DB: Insert care log and update derived summaries
+    API->>DB: Fetch latest pet status
+    API->>WS: Publish updated status to /topic/status
+    API-->>Repo: API response
+    Repo-->>Flutter: Save result
 ```
+
+### Saving a care log in local mode
+
+The Flutter app writes directly to Drift tables, updates weight logs when needed, and recalculates the affected daily summary for the log date.
+
+### Saving a care log in Google Sheets mode
+
+The Flutter app appends rows to the `CareLogs`, `WeightLogs`, and `DailySummaries` sheets through Google APIs. Google Drive `capabilities/canEdit` is used to validate write permission when linking an existing spreadsheet.
 
 ---
 
-## 3. 基礎設施配置 (Infrastructure Configuration)
+## 5. Database Schema
 
-### A. Redis 即時狀態機 (Redis State Machine)
-Redis 存放寵物（約克夏 - 歐嚕嚕）的當下狀態。
+The backend MariaDB schema is initialized from `backend/src/main/resources/schema.sql`.
 
-*   **當前狀態 Hash (`pet:status:current`)**
-    ```json
-    {
-      "lastWeightKg": "3.2",
-      "todayWaterIntakeMl": "180",
-      "todayFoodIntakeG": "120",
-      "lastActiveTime": "2026-05-29T12:00:00Z"
-    }
-    ```
-*   **飲水計時器 (`pet:health:water:timer`)**
-    *   **類型**：String
-    *   **TTL**：28800 秒 (8 小時)
-    *   每次收到 `DRINKING` 事件時重設此 Key 與 TTL。
-    *   若 8 小時內無人更新，Key 過期觸發事件，後端捕獲後發送 FCM 告警：「小狗已經 8 小時沒喝水囉！」。
+Core tables:
 
-### B. Apache Kafka 事件 (Kafka Event Schema)
-*   **Topic**: `pet-events`
-*   所有手動記錄、設備上報一律先注入此 Topic，確保高寫入吞吐量，並由 Consumer 保證資料寫入 MariaDB 的先後順序（防止多端寫入時時間戳記錯亂）。
+- `care_logs`: raw feeding, drinking, weight, activity, and care events.
+- `weight_logs`: normalized weight measurements for trend charts.
+- `daily_health_summaries`: daily food, water, and average weight aggregates.
+
+The local Drift database mirrors the same conceptual model for offline operation.
 
 ---
 
-## 4. 資料庫 Schema (Database Schema)
+## 6. Historical Architecture Notes
 
-### A. 日常健康匯總表 (`daily_health_summaries`)
-```sql
-CREATE TABLE daily_health_summaries (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    date DATE UNIQUE NOT NULL,
-    total_water_intake_ml DOUBLE DEFAULT 0.0,
-    total_food_intake_g DOUBLE DEFAULT 0.0,
-    average_weight_kg DOUBLE DEFAULT 0.0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-```
+Kafka, Redis, Redis key expiration listeners, and write-behind batch persistence were part of the earlier design. The current codebase has removed those dependencies and simplified runtime infrastructure to MariaDB only in `docker-compose.yml`.
 
-### B. 照護日誌表 (`care_logs`)
-```sql
-CREATE TABLE care_logs (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    event_id VARCHAR(50) UNIQUE NOT NULL,
-    event_type VARCHAR(20) NOT NULL,
-    operator VARCHAR(50) NOT NULL,
-    value DOUBLE,
-    unit VARCHAR(10),
-    note VARCHAR(255),
-    event_timestamp TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### C. 體重日誌表 (`weight_logs`)
-```sql
-CREATE TABLE weight_logs (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    weight_kg DOUBLE NOT NULL,
-    recorded_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
----
-
-## 5. 本地快取策略 (Local Caching)
-
-為了防止前端 App 在打開或重新整理時頻繁查詢 MariaDB 進而造成 DB 負擔，後端採用 **Caffeine (本地一級快取)**：
-*   **快取對象**：
-    1.  過去 12 週的體重變化趨勢數據。
-    2.  過去 30 天的每日健康匯總 (`daily_health_summaries`)。
-*   **過期策略**：
-    - 寫入後 10 分鐘自動過期 (Write-expire)。
-    - 當有新的體重或日誌寫入時，主動手動失效 (Evict) 對應的快取。
+When reading older task history, references to Kafka and Redis should be interpreted as completed historical work, not active runtime requirements.

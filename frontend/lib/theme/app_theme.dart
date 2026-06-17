@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Light Theme Palette
@@ -29,10 +28,11 @@ class AppTheme {
         onSurface: lightText,
         brightness: Brightness.light,
       ),
-      textTheme: GoogleFonts.outfitTextTheme(ThemeData.light().textTheme).copyWith(
-        bodyLarge: GoogleFonts.outfit(color: lightText),
-        bodyMedium: GoogleFonts.outfit(color: lightText),
-      ),
+          textTheme: ThemeData.light().textTheme.apply(
+            fontFamily: 'Noto Sans TC',
+            bodyColor: lightText,
+            displayColor: lightText,
+          ),
       scaffoldBackgroundColor: lightBackground,
       appBarTheme: const AppBarTheme(
         backgroundColor: lightBackground,
@@ -67,10 +67,11 @@ class AppTheme {
         onSurface: darkText,
         brightness: Brightness.dark,
       ),
-      textTheme: GoogleFonts.outfitTextTheme(ThemeData.dark().textTheme).copyWith(
-        bodyLarge: GoogleFonts.outfit(color: darkText),
-        bodyMedium: GoogleFonts.outfit(color: darkText),
-      ),
+          textTheme: ThemeData.dark().textTheme.apply(
+            fontFamily: 'Noto Sans TC',
+            bodyColor: darkText,
+            displayColor: darkText,
+          ),
       scaffoldBackgroundColor: darkBackground,
       appBarTheme: const AppBarTheme(
         backgroundColor: darkBackground,

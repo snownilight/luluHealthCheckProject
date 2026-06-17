@@ -18,6 +18,7 @@ target/
 # Web/JavaScript (if any)
 node_modules/
 dist/
+.local-tools/
 
 # IDEs & System files
 .idea/
@@ -43,3 +44,8 @@ Thumbs.db
 application-prod.properties
 application-local.properties
 github_token.md
+
+# Google OAuth / Firebase secrets
+frontend/android/app/google-services.json
+frontend/ios/Runner/GoogleService-Info.plist
+backend/src/main/resources/firebase-service-account.json
